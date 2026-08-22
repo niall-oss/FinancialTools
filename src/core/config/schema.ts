@@ -1,0 +1,274 @@
+import { taxIeConfigValues } from "../irish-income-tax";
+
+export type ConfigValue = string | number | boolean;
+export type ConfigSection = Record<string, ConfigValue>;
+export type ConfigData = Record<string, ConfigSection>;
+
+export type TaxMode = "none" | "deemed_disposal" | "cgt_on_exit" | "income_annual";
+
+export const STORAGE_KEY = "financials-config-v1";
+
+export const DEFAULTS: ConfigData = {
+  profile: {
+    annual_salary: 70000,
+    age: 30,
+  },
+  tax_ie: taxIeConfigValues(),
+  compound: {
+    initial_investment: 10000,
+    monthly_contribution: 500,
+    years: 30,
+    annual_return_pct: 7.0,
+    annual_fee_pct: 0.5,
+    tax_mode: "deemed_disposal",
+    deemed_disposal_rate_pct: 38,
+    deemed_disposal_interval_years: 8,
+    cgt_rate_pct: 33,
+    income_tax_from_profile: true,
+    income_tax_manual_rate_pct: 40,
+    inflation_adjustment: false,
+    inflation_rate_pct: 2.5,
+  },
+  mortgage: {
+    property_price: 400000,
+    deposit_pct: 10,
+    deposit_input_mode: "pct",
+    deposit_amount: 40000,
+    interest_rate_pct: 3.8,
+    term_years: 30,
+    buyer_type: "ftb",
+    property_type: "new_build",
+    use_green_mortgage: false,
+    ber_rating: "B",
+    green_discount_override_pct: -1,
+    use_profile_salary: true,
+    second_applicant_salary: 0,
+    monthly_commitments: 0,
+    assume_mpe: false,
+    stress_test_enabled: true,
+    is_bridging_loan: false,
+    use_help_to_buy: false,
+    htb_refund_estimate: 0,
+    use_first_home_scheme: false,
+    fhs_equity_pct: 10,
+    solicitor_fee: 2000,
+    valuation_fee: 200,
+    include_survey: true,
+    survey_fee: 400,
+    mortgage_protection_monthly: 35,
+    home_insurance_annual: 450,
+    lpt_local_adjustment_pct: 0,
+    overpayment_monthly: 0,
+    overpayment_monthly_start_year: 1,
+    overpayment_lump_sum: 0,
+    overpayment_lump_sum_start_year: 1,
+  },
+  pension: {
+    use_profile: true,
+    annual_salary: 70000,
+    age: 30,
+    employment_type: "paye",
+    tax_status: "single",
+    other_income: 0,
+    sportsperson: false,
+    scheme_type: "occupational",
+    employee_contrib_mode: "pct",
+    employee_contrib_pct: 7,
+    employee_contrib_amount: 4900,
+    employer_contrib_mode: "pct",
+    employer_contrib_pct: 7,
+    employer_contrib_amount: 4900,
+    existing_avc_annual: 0,
+    brought_forward_unrelieved: 0,
+    compare_bands: false,
+    compare_standard_rate_pct: 20,
+    compare_higher_rate_pct: 40,
+    compare_band_single: 44000,
+    compare_band_spccc: 48000,
+    compare_band_married_one: 53000,
+    compare_band_married_two_base: 53000,
+    compare_band_married_two_max_increase: 35000,
+    extra_employee_pct: 5,
+    current_fund: 0,
+    years_to_contribute: 35,
+    annual_return_pct: 6,
+    annual_fee_pct: 0.5,
+  },
+  autoenrol: {
+    use_profile: true,
+    annual_salary: 70000,
+    age: 30,
+    employment_type: "paye",
+    tax_status: "single",
+    other_income: 0,
+    enrolment_year: 2026,
+    participation: "stay",
+    has_payroll_pension: false,
+    compare_scheme: "occupational",
+    compare_preset: "match_ae",
+    employee_contrib_mode: "pct",
+    employee_contrib_pct: 1.5,
+    employee_contrib_amount: 1050,
+    employer_contrib_mode: "pct",
+    employer_contrib_pct: 1.5,
+    employer_contrib_amount: 1050,
+    current_fund: 0,
+    years_to_contribute: 35,
+    annual_return_pct: 6,
+    ae_annual_fee_pct: 0.04,
+    alt_annual_fee_pct: 0.5,
+    admin_fee_weekly: 0.55,
+  },
+  networth: {
+    asset_groups: "Cash,Property,Pensions,Investments,Vehicles,Other",
+    liability_groups: "Mortgage,Loans,Credit cards,Other",
+    assets:
+      "Cash|Current account|5000;Cash|Credit union|10000;Property|Home|400000;Pensions|Occupational pension|40000;Pensions|PRSA|0;Investments|ETFs|10000;Vehicles|Car|10000",
+    liabilities: "Mortgage|Home loan|280000;Loans|Car loan|5000;Credit cards|Credit card|0",
+  },
+};
+
+export const PROFILE_KEYS = ["annual_salary", "age"] as const;
+
+export const TAX_IE_KEYS = [
+  "standard_rate_pct",
+  "higher_rate_pct",
+  "band_single",
+  "band_spccc",
+  "band_married_one",
+  "band_married_two_base",
+  "band_married_two_max_increase",
+] as const;
+
+export const COMPOUND_KEYS = [
+  "initial_investment",
+  "monthly_contribution",
+  "years",
+  "annual_return_pct",
+  "annual_fee_pct",
+  "tax_mode",
+  "deemed_disposal_rate_pct",
+  "deemed_disposal_interval_years",
+  "cgt_rate_pct",
+  "income_tax_from_profile",
+  "income_tax_manual_rate_pct",
+  "inflation_adjustment",
+  "inflation_rate_pct",
+] as const;
+
+export const MORTGAGE_KEYS = [
+  "property_price",
+  "deposit_pct",
+  "deposit_input_mode",
+  "deposit_amount",
+  "interest_rate_pct",
+  "term_years",
+  "buyer_type",
+  "property_type",
+  "use_green_mortgage",
+  "ber_rating",
+  "green_discount_override_pct",
+  "use_profile_salary",
+  "second_applicant_salary",
+  "monthly_commitments",
+  "assume_mpe",
+  "stress_test_enabled",
+  "is_bridging_loan",
+  "use_help_to_buy",
+  "htb_refund_estimate",
+  "use_first_home_scheme",
+  "fhs_equity_pct",
+  "solicitor_fee",
+  "valuation_fee",
+  "include_survey",
+  "survey_fee",
+  "mortgage_protection_monthly",
+  "home_insurance_annual",
+  "lpt_local_adjustment_pct",
+  "overpayment_monthly",
+  "overpayment_monthly_start_year",
+  "overpayment_lump_sum",
+  "overpayment_lump_sum_start_year",
+] as const;
+
+export const PENSION_KEYS = [
+  "use_profile",
+  "annual_salary",
+  "age",
+  "employment_type",
+  "tax_status",
+  "other_income",
+  "sportsperson",
+  "scheme_type",
+  "employee_contrib_mode",
+  "employee_contrib_pct",
+  "employee_contrib_amount",
+  "employer_contrib_mode",
+  "employer_contrib_pct",
+  "employer_contrib_amount",
+  "existing_avc_annual",
+  "brought_forward_unrelieved",
+  "compare_bands",
+  "compare_standard_rate_pct",
+  "compare_higher_rate_pct",
+  "compare_band_single",
+  "compare_band_spccc",
+  "compare_band_married_one",
+  "compare_band_married_two_base",
+  "compare_band_married_two_max_increase",
+  "extra_employee_pct",
+  "current_fund",
+  "years_to_contribute",
+  "annual_return_pct",
+  "annual_fee_pct",
+] as const;
+
+export const NETWORTH_KEYS = ["asset_groups", "liability_groups", "assets", "liabilities"] as const;
+
+export const AUTOENROL_KEYS = [
+  "use_profile",
+  "annual_salary",
+  "age",
+  "employment_type",
+  "tax_status",
+  "other_income",
+  "enrolment_year",
+  "participation",
+  "has_payroll_pension",
+  "compare_scheme",
+  "compare_preset",
+  "employee_contrib_mode",
+  "employee_contrib_pct",
+  "employee_contrib_amount",
+  "employer_contrib_mode",
+  "employer_contrib_pct",
+  "employer_contrib_amount",
+  "current_fund",
+  "years_to_contribute",
+  "annual_return_pct",
+  "ae_annual_fee_pct",
+  "alt_annual_fee_pct",
+  "admin_fee_weekly",
+] as const;
+
+export function coerceConfigValue(raw: string): ConfigValue {
+  const trimmed = raw.trim();
+  const lower = trimmed.toLowerCase();
+  if (lower === "true") return true;
+  if (lower === "false") return false;
+  const num = Number(trimmed);
+  if (trimmed !== "" && !Number.isNaN(num)) return num;
+  return trimmed;
+}
+
+export function mergeWithDefaults(parsed: ConfigData): ConfigData {
+  const merged: ConfigData = structuredClone(DEFAULTS);
+  for (const [section, values] of Object.entries(parsed)) {
+    merged[section] ??= {};
+    for (const [key, value] of Object.entries(values)) {
+      merged[section][key] = value;
+    }
+  }
+  delete merged.profile?.tax_residency;
+  return merged;
+}

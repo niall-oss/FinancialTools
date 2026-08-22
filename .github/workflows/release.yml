@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Next version
+        id: version
+        run: |
+          git fetch --force --tags
+          latest=$(git tag -l 'v[0-9]*' | sed 's/^v//' | grep -E '^[0-9]+$' | sort -n | tail -1 || true)
+          if [ -z "$latest" ]; then
+            next=1
+          else
+            next=$((latest + 1))
+          fi
+          echo "version=$next" >> "$GITHUB_OUTPUT"
+          echo "Next release: v$next"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: "3.14"
+          enable-cache: true
+
+      - run: npm ci
+      - run: uv sync --frozen
+      - run: npm run typecheck
+      - run: npm test
+      - run: uv run ruff check build/ tests/
+      - run: uv run ty check
+      - run: uv run pytest
+
+      - name: Build
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          VITE_APP_VERSION: ${{ steps.version.outputs.version }}
+        run: npm run build
+
+      - name: Assert build output
+        run: test -f dist/financials.html
+
+      - name: Attach versioned copy
+        run: cp dist/financials.html "dist/financials-v${{ steps.version.outputs.version }}.html"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          N="${{ steps.version.outputs.version }}"
+          gh release create "v${N}" \
+            --title "v${N}" \
+            --generate-notes \
+            dist/financials.html \
+            "dist/financials-v${N}.html"
