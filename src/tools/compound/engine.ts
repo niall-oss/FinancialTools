@@ -15,7 +15,6 @@ export interface CompoundInput {
   incomeTaxFromProfile: boolean;
   incomeTaxManualRatePct: number;
   annualSalary: number;
-  inflationAdjustment: boolean;
   inflationRatePct: number;
   taxIe?: TaxIeParams;
 }
@@ -23,6 +22,7 @@ export interface CompoundInput {
 export interface YearSnapshot {
   year: number;
   balance: number;
+  realBalance: number;
   grossBalance: number;
   contributions: number;
   feesPaid: number;
@@ -38,21 +38,22 @@ export interface TaxEvent {
 export interface CompoundResult {
   years: YearSnapshot[];
   finalBalance: number;
+  finalRealBalance: number;
   totalContributions: number;
   totalFees: number;
   totalTax: number;
   taxEvents: TaxEvent[];
 }
 
-function effectiveAnnualReturn(input: CompoundInput): number {
-  if (!input.inflationAdjustment) return input.annualReturnPct;
-  return input.annualReturnPct - input.inflationRatePct;
+export function fisherRealReturnPct(nominalPct: number, inflationPct: number): number {
+  return ((1 + nominalPct / 100) / (1 + inflationPct / 100) - 1) * 100;
 }
 
 export function runCompoundSimulation(input: CompoundInput): CompoundResult {
   const months = input.years * 12;
-  const monthlyReturn = effectiveAnnualReturn(input) / 100 / 12;
+  const monthlyReturn = input.annualReturnPct / 100 / 12;
   const monthlyFee = input.annualFeePct / 100 / 12;
+  const inflationFactor = 1 + input.inflationRatePct / 100;
 
   let balance = input.initialInvestment;
   let costBasis = input.initialInvestment;
@@ -116,10 +117,12 @@ export function runCompoundSimulation(input: CompoundInput): CompoundResult {
       costBasis = taxResult.newCostBasis;
 
       const growth = balance - totalContributions + totalTax + totalFees;
+      const realBalance = inflationFactor === 0 ? balance : balance / inflationFactor ** year;
 
       yearSnapshots.push({
         year,
         balance,
+        realBalance,
         grossBalance: balance + cumulativeTax + cumulativeFees,
         contributions: totalContributions,
         feesPaid: cumulativeFees,
@@ -135,6 +138,7 @@ export function runCompoundSimulation(input: CompoundInput): CompoundResult {
   return {
     years: yearSnapshots,
     finalBalance: balance,
+    finalRealBalance: yearSnapshots.at(-1)?.realBalance ?? balance,
     totalContributions,
     totalFees,
     totalTax,

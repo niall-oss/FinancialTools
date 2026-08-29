@@ -2,7 +2,7 @@ import type { LearnContent } from "@/learn/types";
 
 export const compoundLearn: LearnContent = {
   overview:
-    "This calculator projects how a lump sum plus monthly contributions grow over a chosen number of years. You can apply Irish tax treatments, an annual product fee, and inflation so the end figure is closer to what you keep.",
+    "This calculator projects how a lump sum plus monthly contributions grow over a chosen number of years. You can apply Irish tax treatments and an annual product fee. The results show the pot in euros and in today's purchasing power.",
   topics: [
     {
       id: "compounding",
@@ -19,7 +19,7 @@ export const compoundLearn: LearnContent = {
     {
       id: "inflation",
       title: "Inflation and what a euro will buy",
-      body: "A euro in 2056 buys less than a euro today. Turn on inflation adjustment to see the pot in today's purchasing power.\n\nThe default 2.5% is a modelling assumption, not a forecast. Raise it if you want a harsher real-terms picture.",
+      body: "Nominal is the euro amount on the statement. Real is what those euros buy in today's money. The chart shows both.\n\nTax still hits the nominal path. Deemed disposal, CGT, and income tax are levied on euro gains, not on purchasing power. The inflation rate only deflates the year-end pot after tax and fees.\n\nThe default 2.5% is a modelling assumption, not a forecast. Raise it if you want a harsher real-terms picture.",
       sourceIds: [],
     },
     {

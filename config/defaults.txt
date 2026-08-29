@@ -26,7 +26,6 @@ deemed_disposal_interval_years=8
 cgt_rate_pct=33
 income_tax_from_profile=true
 income_tax_manual_rate_pct=40
-inflation_adjustment=false
 inflation_rate_pct=2.5
 
 [mortgage]

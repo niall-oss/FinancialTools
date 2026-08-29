@@ -7,7 +7,7 @@ import { compoundLearn } from "./learn";
 export const compoundTool: ToolDefinition = {
   id: "compound",
   title: "Compound calculator",
-  description: "Investment growth with Irish tax modes, fees, and inflation adjustment.",
+  description: "Investment growth with Irish tax modes, fees, and nominal vs real balances.",
   icon: TrendingUp,
   configKeys: [...COMPOUND_KEYS],
   component: CompoundTool,
