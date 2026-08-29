@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Download, FileUp, MoreHorizontal, RotateCcw } from "lucide-react";
+import { Download, FileUp, MoreHorizontal, RotateCcw, User } from "lucide-react";
+import { ProfileSettings } from "@/components/app/ProfileSettings";
 import { ThemeToggle } from "@/components/app/ThemeToggle";
 import {
   AlertDialog,
@@ -18,7 +19,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { configStore } from "@/core/config/store";
+import { useIsLg } from "@/hooks/use-media-query";
 import { navigate } from "@/hooks/use-hash-route";
 
 function appVersionLabel(): string {
@@ -30,29 +39,50 @@ function appVersionLabel(): string {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [resetOpen, setResetOpen] = useState(false);
+  const isLg = useIsLg();
 
   return (
     <div className="flex h-svh min-h-svh flex-col overflow-hidden bg-background">
-      <header className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-2">
-        <div className="flex items-baseline gap-2">
+      <header className="flex items-center justify-between gap-2 border-b border-border bg-card px-[max(1rem,env(safe-area-inset-left))] py-2 pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))]">
+        <div className="flex min-w-0 items-center gap-1.5">
+          {!isLg ? (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button type="button" variant="outline" size="sm">
+                  <User />
+                  Profile
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="w-[min(100%,20rem)] gap-3 overflow-y-auto p-4 pt-[max(2.5rem,env(safe-area-inset-top))]"
+              >
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Profile and tax bands</SheetTitle>
+                </SheetHeader>
+                <ProfileSettings />
+              </SheetContent>
+            </Sheet>
+          ) : null}
           <button
             type="button"
-            className="text-left text-base font-semibold tracking-tight"
+            className="min-w-0 truncate text-left text-base font-semibold tracking-tight"
             onClick={() => navigate("")}
           >
             Irish Financial Tools
           </button>
-          <span className="text-xs font-normal tabular-nums text-muted-foreground">
+          <span className="hidden text-xs font-normal tabular-nums text-muted-foreground lg:inline">
             {appVersionLabel()}
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button type="button" variant="outline" size="sm">
                 <MoreHorizontal />
-                Config
+                <span className="hidden lg:inline">Config</span>
+                <span className="sr-only lg:hidden">Config</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44">
@@ -108,7 +138,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </AlertDialogContent>
       </AlertDialog>
 
-      <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-4">{children}</main>
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
+        {children}
+      </main>
     </div>
   );
 }

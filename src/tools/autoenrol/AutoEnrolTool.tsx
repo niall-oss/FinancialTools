@@ -22,7 +22,7 @@ import { FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField, SelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
-import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
+import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import { formatEur, formatNumber, formatPct } from "@/core/format";
 import { resolveTaxIe, type TaxStatus } from "@/core/irish-income-tax";
 import {
@@ -528,7 +528,7 @@ export function AutoEnrolTool() {
           </FieldNote>
 
           <Tabs defaultValue="takehome">
-            <TabsList className="flex w-full flex-wrap">
+            <TabsList className={chartTabsListClass}>
               <TabsTrigger value="takehome">Take-home</TabsTrigger>
               <TabsTrigger value="year">This year</TabsTrigger>
               <TabsTrigger value="schedule">Schedule</TabsTrigger>

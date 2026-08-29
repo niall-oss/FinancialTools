@@ -43,9 +43,13 @@ export function ToolLayout({
       </div>
 
       <Tabs defaultValue="inputs" className="flex min-h-0 flex-1 flex-col lg:hidden">
-        <TabsList className="w-full shrink-0">
-          <TabsTrigger value="inputs">Inputs</TabsTrigger>
-          <TabsTrigger value="results">Results</TabsTrigger>
+        <TabsList className="h-9 w-full shrink-0">
+          <TabsTrigger value="inputs" className="h-full">
+            Inputs
+          </TabsTrigger>
+          <TabsTrigger value="results" className="h-full">
+            Results
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="inputs" className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
           {inputs}
@@ -67,3 +71,6 @@ export function ResultsPanel({
 }) {
   return <div className={cn("flex flex-col gap-3", className)}>{children}</div>;
 }
+
+export const chartTabsListClass =
+  "h-8 w-full justify-start overflow-x-auto overflow-y-hidden **:data-[slot=tabs-trigger]:flex-none";

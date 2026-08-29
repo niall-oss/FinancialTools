@@ -22,7 +22,7 @@ import { FieldError, FieldGrid, FieldNote, HintLabel } from "@/components/app/Fi
 import { ConfigNumberField, NumberField } from "@/components/app/NumberField";
 import { ConfigSelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
-import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
+import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import type { BerRating } from "@/core/irish-green-mortgage";
 import type { BuyerType } from "@/core/irish-mortgage-rules";
 import { formatEur, formatPct } from "@/core/format";
@@ -577,7 +577,7 @@ export function MortgageTool() {
           </StatGrid>
 
           <Tabs defaultValue="amort">
-            <TabsList className="flex w-full flex-wrap">
+            <TabsList className={chartTabsListClass}>
               <TabsTrigger value="amort">Amortization</TabsTrigger>
               <TabsTrigger value="balance">Balance</TabsTrigger>
               <TabsTrigger value="paydown">Paydown</TabsTrigger>

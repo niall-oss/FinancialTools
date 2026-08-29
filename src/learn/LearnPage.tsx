@@ -19,7 +19,7 @@ export function LearnPage({ tool }: { tool: ToolDefinition }) {
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
-      <header className="mb-4 flex items-end justify-between gap-3">
+      <header className="mb-4 flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3">
         <div>
           <Link href="#/" className="text-xs text-muted-foreground hover:text-foreground">
             ← All tools

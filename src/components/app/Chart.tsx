@@ -88,7 +88,7 @@ export function Chart(props: ChartProps) {
         </Button>
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="flex h-[calc(100vh-3rem)] w-[calc(100vw-3rem)] max-w-none flex-col gap-0 p-3 sm:max-w-none">
+        <DialogContent className="flex h-[100dvh] w-screen max-w-none flex-col gap-0 rounded-none p-3 inset-0 top-0 left-0 translate-x-0 translate-y-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:h-[calc(100vh-3rem)] sm:w-[calc(100vw-3rem)] sm:max-w-none sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-xl">
           <DialogHeader className="sr-only">
             <DialogTitle>Chart</DialogTitle>
           </DialogHeader>
