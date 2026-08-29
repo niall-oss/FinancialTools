@@ -50,3 +50,23 @@ export const PRSI_USC_NOTE =
 
 export const DISCLAIMER =
   "Illustrative only, using 2026 Irish rules as defaults. Not tax advice. Check a current tax-credit cert and scheme booklet before acting.";
+
+export const CHART_TAKEHOME_SUMMARY = "Where a year's pay goes, with and without the pension.";
+export const CHART_TAKEHOME_DETAIL =
+  "Each bar is a full year of pay. Take-home is what hits the account. USC is Universal Social Charge. PRSI is Pay Related Social Insurance. Employee pension is your contribution. USC and PRSI do not fall when you pay into a pension.";
+
+export const CHART_INCREASE_SUMMARY = "Tax saved and what the contribution costs you as you raise the %.";
+export const CHART_INCREASE_DETAIL =
+  "Runs employee contribution from 0% to this year's age cap. Tax saved is income tax avoided. Net cost is what you actually paid after that relief. The kink is where the next euro only gets 20% relief instead of 40%.";
+
+export const CHART_AGE_SUMMARY = "The most you can get income-tax relief on at each age.";
+export const CHART_AGE_DETAIL =
+  "Irish age-related percentages of earnings, capped at €115,000. Your current band is the one that matches your age. Unused room does not carry forward.";
+
+export const CHART_PROJECTION_SUMMARY = "The pot over time under three contribution habits.";
+export const CHART_PROJECTION_DETAIL =
+  "Hold current € keeps today's euro amount. Hold current % scales with salary. Always max uses the age-band % and steps up at 30, 40, 50, 55 and 60. Growth is tax-deferred. There is no 8-year deemed disposal on a pension.";
+
+export const CHART_BANDS_SUMMARY = "This year's result on today's tax bands versus the proposed set.";
+export const CHART_BANDS_DETAIL =
+  "Same contributions. Current bands are the home-page rates. Proposed bands are the what-if you typed. Tax saved, income tax left, and take-home sit side by side.";

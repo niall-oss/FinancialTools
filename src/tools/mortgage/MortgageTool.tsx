@@ -1,6 +1,7 @@
-import { TriangleAlert } from "lucide-react";
+import { Plus, Trash2, TriangleAlert } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Chart } from "@/components/app/Chart";
 import { ConfigCheckboxField } from "@/components/app/CheckboxField";
-import { FieldError, FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
+import { ChartExplainer, FieldError, FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
 import { ConfigNumberField, NumberField } from "@/components/app/NumberField";
 import { ConfigSelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
@@ -30,20 +31,46 @@ import { useConfigStore } from "@/hooks/use-config";
 import { aggregateAnnualTotals } from "@/tools/mortgage/amortization";
 import { runMortgagePlan, type MortgageInput, type PropertyType } from "@/tools/mortgage/engine";
 import {
+  addRatePeriod,
+  canAddRatePeriod,
+  normalizeRateSchedule,
+  parseRateSchedule,
+  removeRatePeriod,
+  serializeRateSchedule,
+  updateRatePeriod,
+  type RateKind,
+  type RatePeriod,
+} from "@/tools/mortgage/rate-schedule";
+import {
   BER_RATING_HINT,
   BRIDGING_LOAN_HINT,
   BUYER_TYPE_HINT,
+  CHART_AMORTIZATION_DETAIL,
+  CHART_AMORTIZATION_SUMMARY,
+  CHART_BALANCE_DETAIL,
+  CHART_BALANCE_SUMMARY,
+  CHART_INTEREST_DETAIL,
+  CHART_INTEREST_SUMMARY,
+  CHART_PAYDOWN_DETAIL,
+  CHART_PAYDOWN_SUMMARY,
+  CHART_PRINCIPAL_DETAIL,
+  CHART_PRINCIPAL_SUMMARY,
+  CHART_UPFRONT_DETAIL,
+  CHART_UPFRONT_SUMMARY,
   DEPOSIT_PCT_HINT,
   DISCLAIMER,
   FHS_EQUITY_HINT,
+  FHS_EQUITY_STAT_HINT,
   FHS_HINT,
   GREEN_DISCOUNT_OVERRIDE_HINT,
   GREEN_MORTGAGE_HINT,
   HOME_INSURANCE_HINT,
+  HTB_APPLIED_HINT,
   HTB_HINT,
   HTB_REFUND_HINT,
   INTEREST_RATE_HINT,
   LPT_ADJUSTMENT_HINT,
+  LPT_ANNUAL_HINT,
   MONTHLY_COMMITMENTS_HINT,
   MORTGAGE_PROTECTION_HINT,
   MPE_HINT,
@@ -51,6 +78,7 @@ import {
   OVERPAYMENT_LUMP_SUM_START_HINT,
   OVERPAYMENT_MONTHLY_START_HINT,
   PROPERTY_TYPE_HINT,
+  RATE_SCHEDULE_HINT,
   SECOND_SALARY_HINT,
   SOLICITOR_FEE_HINT,
   STRESS_TEST_HINT,
@@ -107,6 +135,7 @@ function readInput(config: ReturnType<typeof useConfigStore>): MortgageInput {
     depositPct: config.getNumber("mortgage", "deposit_pct"),
     interestRatePct: config.getNumber("mortgage", "interest_rate_pct"),
     termYears: config.getNumber("mortgage", "term_years"),
+    ratePeriods: readRatePeriods(config),
     useGreenMortgage: config.getBoolean("mortgage", "use_green_mortgage"),
     berRating: config.getString("mortgage", "ber_rating", "B") as BerRating,
     greenDiscountOverridePct: overridePct < 0 ? null : overridePct,
@@ -135,6 +164,125 @@ function readInput(config: ReturnType<typeof useConfigStore>): MortgageInput {
     overpaymentLumpSum: config.getNumber("mortgage", "overpayment_lump_sum"),
     overpaymentLumpSumStartYear: config.getNumber("mortgage", "overpayment_lump_sum_start_year", 1),
   };
+}
+
+function readRatePeriods(config: ReturnType<typeof useConfigStore>): RatePeriod[] {
+  return normalizeRateSchedule(
+    parseRateSchedule(config.getString("mortgage", "rate_schedule")),
+    config.getNumber("mortgage", "term_years"),
+    config.getNumber("mortgage", "interest_rate_pct"),
+  );
+}
+
+function persistRateSchedule(
+  config: ReturnType<typeof useConfigStore>,
+  periods: RatePeriod[],
+): void {
+  if (periods[0]) config.set("mortgage", "interest_rate_pct", periods[0].ratePct);
+  config.set("mortgage", "rate_schedule", serializeRateSchedule(periods));
+}
+
+function RatePeriodsField({
+  periods,
+  termYears,
+  invalid,
+  errorMessage,
+}: {
+  periods: RatePeriod[];
+  termYears: number;
+  invalid: boolean;
+  errorMessage?: string;
+}) {
+  const config = useConfigStore();
+  const canAdd = canAddRatePeriod(periods, termYears);
+
+  return (
+    <div className="mt-3 min-w-0">
+      <HintLabel hint={RATE_SCHEDULE_HINT}>Rate periods</HintLabel>
+      <div className="space-y-1.5">
+        {periods.map((period, index) => (
+          <div key={index} className="flex items-center gap-1.5">
+            <Input
+              type="number"
+              min={1}
+              step={1}
+              aria-label={`Period ${index + 1} years`}
+              className="h-8 w-16 font-mono text-sm tabular-nums"
+              value={period.years}
+              onChange={(event) => {
+                persistRateSchedule(
+                  config,
+                  updateRatePeriod(periods, index, { years: Number(event.target.value) }, termYears),
+                );
+              }}
+            />
+            <Select
+              value={period.kind}
+              onValueChange={(value) => {
+                persistRateSchedule(
+                  config,
+                  updateRatePeriod(periods, index, { kind: value as RateKind }, termYears),
+                );
+              }}
+            >
+              <SelectTrigger size="sm" className="h-8 min-w-0 flex-1 font-mono text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" align="start">
+                <SelectItem value="fixed" className="font-mono text-sm">
+                  Fixed
+                </SelectItem>
+                <SelectItem value="variable" className="font-mono text-sm">
+                  Variable
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              min={0}
+              step={0.05}
+              aria-label={`Period ${index + 1} rate`}
+              aria-invalid={invalid || undefined}
+              className="h-8 w-20 font-mono text-sm tabular-nums"
+              value={period.ratePct}
+              onChange={(event) => {
+                persistRateSchedule(
+                  config,
+                  updateRatePeriod(periods, index, { ratePct: Number(event.target.value) }, termYears),
+                );
+              }}
+            />
+            {index > 0 ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="shrink-0 text-muted-foreground"
+                aria-label={`Remove period ${index + 1}`}
+                onClick={() => persistRateSchedule(config, removeRatePeriod(periods, index))}
+              >
+                <Trash2 />
+              </Button>
+            ) : (
+              <span className="inline-flex size-7 shrink-0" aria-hidden />
+            )}
+          </div>
+        ))}
+      </div>
+      <Button
+        type="button"
+        variant="outline"
+        size="xs"
+        className="mt-2"
+        disabled={!canAdd}
+        onClick={() => persistRateSchedule(config, addRatePeriod(periods, termYears))}
+      >
+        <Plus />
+        Add rate period
+      </Button>
+      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+    </div>
+  );
 }
 
 function DepositField({ invalid, errorMessage }: { invalid: boolean; errorMessage?: string }) {
@@ -238,6 +386,23 @@ export function MortgageTool() {
     : null;
   const overpayLabels = overpayAnnual?.map((year) => `Y${year.year}`) ?? yearLabels;
 
+  const riskBaseline = aggregateAnnualTotals(
+    result.rateRisk.baseline.monthlySnapshots,
+    result.loanAmountAfterFhs,
+  );
+  const riskPlus = aggregateAnnualTotals(
+    result.rateRisk.plusOne.monthlySnapshots,
+    result.loanAmountAfterFhs,
+  );
+  const riskMinus = aggregateAnnualTotals(
+    result.rateRisk.minusOne.monthlySnapshots,
+    result.loanAmountAfterFhs,
+  );
+  const riskYearCount = Math.max(riskBaseline.length, riskPlus.length, riskMinus.length, 1);
+  const riskLabels = Array.from({ length: riskYearCount }, (_, index) => `Y${index + 1}`);
+  const riskInterest = (rows: typeof riskBaseline): number[] =>
+    Array.from({ length: riskYearCount }, (_, index) => rows[index]?.interestPaid ?? 0);
+
   return (
     <ToolLayout
       title="Irish mortgage calculator"
@@ -300,12 +465,17 @@ export function MortgageTool() {
             <AccordionTrigger>Loan terms</AccordionTrigger>
             <AccordionContent>
               <FieldGrid>
-                <ConfigNumberField
-                  section="mortgage"
-                  configKey="interest_rate_pct"
+                <NumberField
                   label="Base interest rate (%)"
+                  value={input.interestRatePct}
                   step={0.05}
                   hint={INTEREST_RATE_HINT}
+                  onChange={(value) => {
+                    persistRateSchedule(
+                      config,
+                      normalizeRateSchedule(input.ratePeriods ?? [], input.termYears, value),
+                    );
+                  }}
                 />
                 <ConfigCheckboxField
                   section="mortgage"
@@ -327,20 +497,40 @@ export function MortgageTool() {
                   step={0.05}
                   hint={GREEN_DISCOUNT_OVERRIDE_HINT}
                 />
-                <ConfigNumberField
-                  section="mortgage"
-                  configKey="term_years"
+                <NumberField
                   label="Term (years)"
+                  value={input.termYears}
                   invalid={invalidFields.has("term_years")}
                   errorMessage={getMortgageFieldErrorMessage(fieldErrors, "term_years")}
                   hint={TERM_YEARS_HINT}
+                  onChange={(value) => {
+                    const termYears = value;
+                    config.set("mortgage", "term_years", termYears);
+                    persistRateSchedule(
+                      config,
+                      normalizeRateSchedule(input.ratePeriods ?? [], termYears, input.interestRatePct),
+                    );
+                  }}
                 />
               </FieldGrid>
+              <RatePeriodsField
+                periods={input.ratePeriods ?? []}
+                termYears={input.termYears}
+                invalid={invalidFields.has("rate_schedule")}
+                errorMessage={getMortgageFieldErrorMessage(fieldErrors, "rate_schedule")}
+              />
               {input.useGreenMortgage ? (
                 <FieldNote className="mt-2">
                   {result.green.greenEligible
                     ? `Effective rate: ${formatPct(result.effectiveInterestRatePct, 2)} (−${formatPct(result.green.greenDiscountPct, 2)} green discount, ${result.green.greenTier} tier)`
                     : "Green discount not applied. See warnings below."}
+                </FieldNote>
+              ) : null}
+              {result.paymentAfterFirstPeriod ? (
+                <FieldNote className="mt-2">
+                  After year {result.paymentAfterFirstPeriod.afterYear} the payment becomes{" "}
+                  {formatEur(result.paymentAfterFirstPeriod.monthlyPayment)} at{" "}
+                  {formatPct(result.paymentAfterFirstPeriod.ratePct, 2)}.
                 </FieldNote>
               ) : null}
             </AccordionContent>
@@ -476,6 +666,9 @@ export function MortgageTool() {
                   hint={LPT_ADJUSTMENT_HINT}
                 />
               </FieldGrid>
+              <FieldNote className="mt-2">
+                Revenue basic rate for this price is {formatEur(result.lpt.basicRate)}.
+              </FieldNote>
             </AccordionContent>
           </AccordionItem>
 
@@ -556,9 +749,21 @@ export function MortgageTool() {
 
           <StatGrid>
             <StatCard label="Stamp duty" value={formatEur(result.stampDuty.total)} />
-            <StatCard label="LPT (annual)" value={formatEur(result.lpt.annualCharge)} />
-            <StatCard label="HTB applied" value={formatEur(result.htb.appliedAmount)} />
-            <StatCard label="FHS equity" value={formatEur(result.fhs.equityAmount)} />
+            <StatCard
+              label="LPT (annual)"
+              value={formatEur(result.lpt.annualCharge)}
+              hint={LPT_ANNUAL_HINT}
+            />
+            <StatCard
+              label="HTB applied"
+              value={formatEur(result.htb.appliedAmount)}
+              hint={HTB_APPLIED_HINT}
+            />
+            <StatCard
+              label="FHS equity"
+              value={formatEur(result.fhs.equityAmount)}
+              hint={FHS_EQUITY_STAT_HINT}
+            />
             {result.interestSavedVsStandardRate > 0 ? (
               <StatCard
                 label="Green interest saved"
@@ -583,8 +788,10 @@ export function MortgageTool() {
               <TabsTrigger value="paydown">Paydown</TabsTrigger>
               <TabsTrigger value="principal">Principal</TabsTrigger>
               <TabsTrigger value="upfront">Upfront</TabsTrigger>
+              <TabsTrigger value="interest">Interest</TabsTrigger>
             </TabsList>
             <TabsContent value="amort" className="mt-2">
+              <ChartExplainer summary={CHART_AMORTIZATION_SUMMARY} detail={CHART_AMORTIZATION_DETAIL} />
               <Chart
                 type="line"
                 labels={yearLabels}
@@ -605,6 +812,7 @@ export function MortgageTool() {
               />
             </TabsContent>
             <TabsContent value="balance" className="mt-2">
+              <ChartExplainer summary={CHART_BALANCE_SUMMARY} detail={CHART_BALANCE_DETAIL} />
               <Chart
                 type="line"
                 labels={yearLabels}
@@ -612,6 +820,7 @@ export function MortgageTool() {
               />
             </TabsContent>
             <TabsContent value="paydown" className="mt-2">
+              <ChartExplainer summary={CHART_PAYDOWN_SUMMARY} detail={CHART_PAYDOWN_DETAIL} />
               {result.overpayment && baselineAnnual && overpayAnnual ? (
                 <Chart
                   type="line"
@@ -641,6 +850,7 @@ export function MortgageTool() {
               )}
             </TabsContent>
             <TabsContent value="principal" className="mt-2">
+              <ChartExplainer summary={CHART_PRINCIPAL_SUMMARY} detail={CHART_PRINCIPAL_DETAIL} />
               {result.overpayment && baselineAnnual && overpayAnnual ? (
                 <Chart
                   type="bar"
@@ -670,6 +880,7 @@ export function MortgageTool() {
               )}
             </TabsContent>
             <TabsContent value="upfront" className="mt-2">
+              <ChartExplainer summary={CHART_UPFRONT_SUMMARY} detail={CHART_UPFRONT_DETAIL} />
               <Chart
                 type="bar"
                 labels={["Deposit", "Stamp duty", "Fees"]}
@@ -685,6 +896,18 @@ export function MortgageTool() {
                         result.upfrontCosts.landRegistryFee,
                     ],
                   },
+                ]}
+              />
+            </TabsContent>
+            <TabsContent value="interest" className="mt-2">
+              <ChartExplainer summary={CHART_INTEREST_SUMMARY} detail={CHART_INTEREST_DETAIL} />
+              <Chart
+                type="line"
+                labels={riskLabels}
+                series={[
+                  { name: "Your rates", data: riskInterest(riskBaseline) },
+                  { name: "Variable +1%", data: riskInterest(riskPlus) },
+                  { name: "Variable −1%", data: riskInterest(riskMinus) },
                 ]}
               />
             </TabsContent>

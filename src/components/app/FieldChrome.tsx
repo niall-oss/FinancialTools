@@ -3,6 +3,37 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+export function HintButton({
+  hint,
+  className,
+  compact = false,
+}: {
+  hint: string;
+  className?: string;
+  compact?: boolean;
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground",
+            compact ? "-m-1 size-6" : "-m-1.5 size-8",
+            className,
+          )}
+          aria-label={hint}
+        >
+          <CircleHelp className="size-3.5" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" side="top" className="w-72 max-w-[min(18rem,calc(100vw-2rem))] p-2.5 text-xs leading-snug">
+        {hint}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function HintLabel({
   htmlFor,
   children,
@@ -19,22 +50,24 @@ export function HintLabel({
       <Label htmlFor={htmlFor} className="text-xs font-medium text-muted-foreground">
         {children}
       </Label>
-      {hint ? (
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              className="-m-1.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground"
-              aria-label={hint}
-            >
-              <CircleHelp className="size-3.5" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" side="top" className="w-72 max-w-[min(18rem,calc(100vw-2rem))] p-2.5 text-xs leading-snug">
-            {hint}
-          </PopoverContent>
-        </Popover>
-      ) : null}
+      {hint ? <HintButton hint={hint} /> : null}
+    </div>
+  );
+}
+
+export function ChartExplainer({
+  summary,
+  detail,
+  className,
+}: {
+  summary: string;
+  detail: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mb-2 flex items-start gap-1", className)}>
+      <p className="text-xs leading-snug text-muted-foreground">{summary}</p>
+      <HintButton hint={detail} />
     </div>
   );
 }

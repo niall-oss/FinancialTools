@@ -12,7 +12,8 @@ export type InvalidMortgageField =
   | "property_price"
   | "property_type"
   | "fhs_equity_pct"
-  | "term_years";
+  | "term_years"
+  | "rate_schedule";
 
 export type MortgageFieldErrors = Partial<Record<InvalidMortgageField, string[]>>;
 
@@ -46,6 +47,24 @@ export function getMortgageFieldErrors(input: MortgageInput): MortgageFieldError
 
   if (input.termYears <= 0) {
     addError(errors, "term_years", "Enter a mortgage term of at least 1 year.");
+  }
+
+  if (input.ratePeriods && input.ratePeriods.length > 0) {
+    if (input.termYears > 0 && input.ratePeriods.length > input.termYears) {
+      addError(
+        errors,
+        "rate_schedule",
+        "Too many rate periods. You can change the rate at most once per year.",
+      );
+    }
+    for (const period of input.ratePeriods) {
+      if (period.years < 1) {
+        addError(errors, "rate_schedule", "Each rate period must last at least 1 year.");
+      }
+      if (period.ratePct < 0) {
+        addError(errors, "rate_schedule", "Interest rates cannot be negative.");
+      }
+    }
   }
 
   if (input.useHelpToBuy) {

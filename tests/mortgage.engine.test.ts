@@ -11,6 +11,14 @@ import { calculateMonthlyPayment, aggregateAnnualTotals, runAmortizationSchedule
 import { getMinDepositPct } from "../src/core/irish-mortgage-rules";
 import { runMortgagePlan } from "../src/tools/mortgage/engine";
 import {
+  addRatePeriod,
+  canAddRatePeriod,
+  normalizeRateSchedule,
+  parseRateSchedule,
+  serializeRateSchedule,
+  shockVariableRates,
+} from "../src/tools/mortgage/rate-schedule";
+import {
   depositAmountFromPct,
   depositPctFromAmount,
   getInvalidMortgageFields,
@@ -281,6 +289,139 @@ describe("deposit conversion", () => {
   });
 });
 
+describe("rate schedule", () => {
+  it("parses and serializes periods", () => {
+    const raw = "fixed|5|3.8;variable|2|4.2;variable|23|3.5";
+    const periods = parseRateSchedule(raw);
+    expect(periods).toEqual([
+      { kind: "fixed", years: 5, ratePct: 3.8 },
+      { kind: "variable", years: 2, ratePct: 4.2 },
+      { kind: "variable", years: 23, ratePct: 3.5 },
+    ]);
+    expect(serializeRateSchedule(periods)).toBe(raw);
+  });
+
+  it("fills an empty schedule from the opening rate and term", () => {
+    expect(normalizeRateSchedule([], 30, 3.8)).toEqual([{ kind: "fixed", years: 30, ratePct: 3.8 }]);
+  });
+
+  it("cannot add a second period in the same year", () => {
+    const oneYear = [{ kind: "fixed" as const, years: 1, ratePct: 3.8 }];
+    expect(canAddRatePeriod(oneYear, 1)).toBe(false);
+    expect(addRatePeriod(oneYear, 1)).toEqual(oneYear);
+
+    const full = Array.from({ length: 5 }, () => ({
+      kind: "variable" as const,
+      years: 1,
+      ratePct: 4,
+    }));
+    expect(canAddRatePeriod(full, 5)).toBe(false);
+    expect(addRatePeriod(full, 5)).toHaveLength(5);
+  });
+
+  it("takes one year from the last period when adding", () => {
+    const added = addRatePeriod([{ kind: "fixed", years: 30, ratePct: 3.8 }], 30);
+    expect(added).toEqual([
+      { kind: "fixed", years: 29, ratePct: 3.8 },
+      { kind: "variable", years: 1, ratePct: 3.8 },
+    ]);
+  });
+
+  it("shocks variable periods only", () => {
+    const periods = [
+      { kind: "fixed" as const, years: 5, ratePct: 3.8 },
+      { kind: "variable" as const, years: 25, ratePct: 4.2 },
+    ];
+    expect(shockVariableRates(periods, 1)).toEqual([
+      { kind: "fixed", years: 5, ratePct: 3.8 },
+      { kind: "variable", years: 25, ratePct: 5.2 },
+    ]);
+    expect(shockVariableRates(periods, -1)[1]!.ratePct).toBeCloseTo(3.2, 5);
+  });
+});
+
+describe("stepped amortization", () => {
+  const flat = [
+    { kind: "fixed" as const, years: 30, ratePct: 3.8 },
+  ];
+  const stepped = [
+    { kind: "fixed" as const, years: 5, ratePct: 3.8 },
+    { kind: "variable" as const, years: 25, ratePct: 4.8 },
+  ];
+
+  it("matches a flat rate when the schedule is one fixed period", () => {
+    const without = runAmortizationSchedule({
+      loanAmount: 300_000,
+      annualRatePct: 3.8,
+      termYears: 30,
+    });
+    const withSchedule = runAmortizationSchedule({
+      loanAmount: 300_000,
+      annualRatePct: 3.8,
+      termYears: 30,
+      ratePeriods: flat,
+    });
+    expect(withSchedule.totalInterest).toBeCloseTo(without.totalInterest, 5);
+    expect(withSchedule.monthlyPayment).toBeCloseTo(without.monthlyPayment, 5);
+  });
+
+  it("pays more interest and steps the payment up after a higher variable period", () => {
+    const allFixed = runAmortizationSchedule({
+      loanAmount: 300_000,
+      annualRatePct: 3.8,
+      termYears: 30,
+      ratePeriods: flat,
+    });
+    const mixed = runAmortizationSchedule({
+      loanAmount: 300_000,
+      annualRatePct: 3.8,
+      termYears: 30,
+      ratePeriods: stepped,
+    });
+    expect(mixed.totalInterest).toBeGreaterThan(allFixed.totalInterest);
+    expect(mixed.monthlyPayment).toBeCloseTo(allFixed.monthlyPayment, 5);
+    const lastFixedMonth = mixed.monthlySnapshots[59]!;
+    const firstVariableMonth = mixed.monthlySnapshots[60]!;
+    const fixedPayment = lastFixedMonth.interestPaid + lastFixedMonth.principalPaid;
+    const variablePayment = firstVariableMonth.interestPaid + firstVariableMonth.principalPaid;
+    expect(variablePayment).toBeGreaterThan(fixedPayment);
+  });
+
+  it("leaves fixed-year interest unchanged in the ±1% shock", () => {
+    const result = runMortgagePlan({
+      ...baseMortgageInput,
+      ratePeriods: stepped,
+    });
+    const baseline = aggregateAnnualTotals(
+      result.rateRisk.baseline.monthlySnapshots,
+      result.loanAmountAfterFhs,
+    );
+    const plus = aggregateAnnualTotals(
+      result.rateRisk.plusOne.monthlySnapshots,
+      result.loanAmountAfterFhs,
+    );
+    const minus = aggregateAnnualTotals(
+      result.rateRisk.minusOne.monthlySnapshots,
+      result.loanAmountAfterFhs,
+    );
+    expect(plus[0]!.interestPaid).toBeCloseTo(baseline[0]!.interestPaid, 5);
+    expect(minus[0]!.interestPaid).toBeCloseTo(baseline[0]!.interestPaid, 5);
+    expect(plus[5]!.interestPaid).toBeGreaterThan(baseline[5]!.interestPaid);
+    expect(minus[5]!.interestPaid).toBeLessThan(baseline[5]!.interestPaid);
+  });
+
+  it("still shortens the term when overpaying a stepped schedule", () => {
+    const result = runMortgagePlan({
+      ...baseMortgageInput,
+      ratePeriods: stepped,
+      overpaymentMonthly: 200,
+    });
+    expect(result.overpayment).not.toBeNull();
+    expect(result.overpayment!.interestSaved).toBeGreaterThan(0);
+    expect(result.overpayment!.monthsSaved).toBeGreaterThan(0);
+  });
+});
+
 describe("getInvalidMortgageFields", () => {
   it("flags deposit below Central Bank minimum", () => {
     const invalid = getInvalidMortgageFields({ ...baseMortgageInput, depositPct: 1 });
@@ -295,6 +436,14 @@ describe("getInvalidMortgageFields", () => {
   it("does not flag valid deposit", () => {
     const invalid = getInvalidMortgageFields(baseMortgageInput);
     expect(invalid.has("deposit")).toBe(false);
+  });
+
+  it("flags a rate period shorter than one year", () => {
+    const invalid = getInvalidMortgageFields({
+      ...baseMortgageInput,
+      ratePeriods: [{ kind: "fixed", years: 0, ratePct: 3.8 }],
+    });
+    expect(invalid.has("rate_schedule")).toBe(true);
   });
 
   it("requires 30% minimum for buy-to-let", () => {
