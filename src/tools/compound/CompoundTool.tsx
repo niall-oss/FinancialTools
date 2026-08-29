@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Chart } from "@/components/app/Chart";
 import { ConfigCheckboxField } from "@/components/app/CheckboxField";
-import { FieldGrid, FieldNote } from "@/components/app/FieldChrome";
+import { ChartExplainer, FieldGrid, FieldNote } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField, SelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
@@ -16,7 +16,18 @@ import {
   runCompoundSimulation,
   runSensitivityAnalysis,
 } from "@/tools/compound/engine";
-import { DISCLAIMER } from "@/tools/compound/hints";
+import {
+  CGT_RATE_HINT,
+  CHART_BALANCE_DETAIL,
+  CHART_BALANCE_SUMMARY,
+  CHART_MIX_DETAIL,
+  CHART_MIX_SUMMARY,
+  CHART_SENSITIVITY_DETAIL,
+  CHART_SENSITIVITY_SUMMARY,
+  CHART_TAX_DETAIL,
+  CHART_TAX_SUMMARY,
+  DISCLAIMER,
+} from "@/tools/compound/hints";
 
 const TAX_MODE_OPTIONS = [
   { value: "none", label: "None" },
@@ -129,7 +140,13 @@ export function CompoundTool() {
                   configKey="deemed_disposal_interval_years"
                   label="Deemed disposal interval (years)"
                 />
-                <ConfigNumberField section="compound" configKey="cgt_rate_pct" label="CGT rate (%)" step={0.1} />
+                <ConfigNumberField
+                  section="compound"
+                  configKey="cgt_rate_pct"
+                  label="CGT rate (%)"
+                  step={0.1}
+                  hint={CGT_RATE_HINT}
+                />
                 <ConfigCheckboxField
                   section="compound"
                   configKey="income_tax_from_profile"
@@ -176,6 +193,7 @@ export function CompoundTool() {
               <TabsTrigger value="sensitivity">Sensitivity</TabsTrigger>
             </TabsList>
             <TabsContent value="balance" className="mt-2">
+              <ChartExplainer summary={CHART_BALANCE_SUMMARY} detail={CHART_BALANCE_DETAIL} />
               <Chart
                 type="line"
                 labels={labels}
@@ -186,6 +204,7 @@ export function CompoundTool() {
               />
             </TabsContent>
             <TabsContent value="mix" className="mt-2">
+              <ChartExplainer summary={CHART_MIX_SUMMARY} detail={CHART_MIX_DETAIL} />
               <Chart
                 type="line"
                 labels={labels}
@@ -206,9 +225,11 @@ export function CompoundTool() {
               />
             </TabsContent>
             <TabsContent value="tax" className="mt-2">
+              <ChartExplainer summary={CHART_TAX_SUMMARY} detail={CHART_TAX_DETAIL} />
               <Chart type="bar" labels={taxLabels} series={[{ name: "Tax paid", data: taxData }]} />
             </TabsContent>
             <TabsContent value="sensitivity" className="mt-2">
+              <ChartExplainer summary={CHART_SENSITIVITY_SUMMARY} detail={CHART_SENSITIVITY_DETAIL} />
               <Chart
                 type="scatter"
                 points={sensitivity.map((point) => ({
@@ -217,11 +238,6 @@ export function CompoundTool() {
                   y: point.finalBalance,
                 }))}
               />
-              <FieldNote className="mt-2">
-                Each dot is a full rerun of this plan at a different annual return, from{" "}
-                {input.annualReturnPct - 4}% to {input.annualReturnPct + 4}%. Your expected{" "}
-                {input.annualReturnPct}% sits in the middle. Contributions, fees, and tax stay as you set them.
-              </FieldNote>
             </TabsContent>
           </Tabs>
 

@@ -17,6 +17,12 @@ import {
   runAmortizationSchedule,
   type AmortizationResult,
 } from "./amortization";
+import {
+  applyOpeningRate,
+  normalizeRateSchedule,
+  shockVariableRates,
+  type RatePeriod,
+} from "./rate-schedule";
 
 export type PropertyType = "new_build" | "second_hand";
 
@@ -50,6 +56,7 @@ export interface MortgageInput {
   overpaymentMonthlyStartYear: number;
   overpaymentLumpSum: number;
   overpaymentLumpSumStartYear: number;
+  ratePeriods?: RatePeriod[];
 }
 
 export interface MortgagePlanResult {
@@ -87,6 +94,17 @@ export interface MortgagePlanResult {
   };
   overpayment: ReturnType<typeof compareOverpayment> | null;
   interestSavedVsStandardRate: number;
+  ratePeriods: RatePeriod[];
+  rateRisk: {
+    baseline: AmortizationResult;
+    plusOne: AmortizationResult;
+    minusOne: AmortizationResult;
+  };
+  paymentAfterFirstPeriod: {
+    afterYear: number;
+    monthlyPayment: number;
+    ratePct: number;
+  } | null;
   warnings: string[];
 }
 
@@ -102,6 +120,10 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
   warnings.push(...green.warnings);
 
   const effectiveInterestRatePct = green.effectiveInterestRatePct;
+  const ratePeriods = applyOpeningRate(
+    normalizeRateSchedule(input.ratePeriods ?? [], input.termYears, input.interestRatePct),
+    effectiveInterestRatePct,
+  );
 
   const borrowing = calculateBorrowingCapacity({
     buyerType: input.buyerType,
@@ -148,6 +170,19 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
     loanAmount: loanAmountAfterFhs,
     annualRatePct: effectiveInterestRatePct,
     termYears: input.termYears,
+    ratePeriods,
+  });
+  const plusOne = runAmortizationSchedule({
+    loanAmount: loanAmountAfterFhs,
+    annualRatePct: effectiveInterestRatePct,
+    termYears: input.termYears,
+    ratePeriods: shockVariableRates(ratePeriods, 1),
+  });
+  const minusOne = runAmortizationSchedule({
+    loanAmount: loanAmountAfterFhs,
+    annualRatePct: effectiveInterestRatePct,
+    termYears: input.termYears,
+    ratePeriods: shockVariableRates(ratePeriods, -1),
   });
 
   let amortizationStandardRate: AmortizationResult | null = null;
@@ -157,6 +192,7 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
       loanAmount: loanAmountAfterFhs,
       annualRatePct: input.interestRatePct,
       termYears: input.termYears,
+      ratePeriods: applyOpeningRate(ratePeriods, input.interestRatePct),
     });
     interestSavedVsStandardRate =
       amortizationStandardRate.totalInterest - amortization.totalInterest;
@@ -218,8 +254,11 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
           input.overpaymentLumpSum,
           input.overpaymentMonthlyStartYear,
           input.overpaymentLumpSumStartYear,
+          ratePeriods,
         )
       : null;
+
+  const paymentAfterFirstPeriod = nextPeriodPayment(amortization, ratePeriods);
 
   return {
     borrowing,
@@ -250,6 +289,31 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
     ongoing,
     overpayment,
     interestSavedVsStandardRate,
+    ratePeriods,
+    rateRisk: {
+      baseline: amortization,
+      plusOne,
+      minusOne,
+    },
+    paymentAfterFirstPeriod,
     warnings,
+  };
+}
+
+function nextPeriodPayment(
+  amortization: AmortizationResult,
+  ratePeriods: RatePeriod[],
+): { afterYear: number; monthlyPayment: number; ratePct: number } | null {
+  if (ratePeriods.length < 2) return null;
+  const first = ratePeriods[0]!;
+  const second = ratePeriods[1]!;
+  const snap = amortization.monthlySnapshots[first.years * 12];
+  if (!snap) return null;
+  const monthlyPayment = snap.interestPaid + snap.principalPaid;
+  if (Math.abs(monthlyPayment - amortization.monthlyPayment) < 0.005) return null;
+  return {
+    afterYear: first.years,
+    monthlyPayment,
+    ratePct: second.ratePct,
   };
 }

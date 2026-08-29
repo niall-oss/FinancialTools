@@ -51,3 +51,27 @@ export const ADMIN_FEE_HINT =
 
 export const DISCLAIMER =
   "Illustrative only, using 2026 Irish My Future Fund and PAYE rules as defaults. Not tax advice. Check myfuturefund.ie and a scheme booklet before acting.";
+
+export const AE_STAT_HINT =
+  "AE is My Future Fund, Ireland's auto-enrolment pension. This figure is this year's AE path, not the workplace scheme.";
+
+export const CHART_TAKEHOME_SUMMARY =
+  "Where a year's pay goes, with no pension, My Future Fund, and the workplace scheme.";
+export const CHART_TAKEHOME_DETAIL =
+  "AE is taken from net pay, so the income-tax slice does not shrink. Occupational or PRSA contributions cut income tax only. USC is Universal Social Charge. PRSI is Pay Related Social Insurance. Both still apply.";
+
+export const CHART_YEAR_SUMMARY = "This year's cost and what lands in each pot.";
+export const CHART_YEAR_DETAIL =
+  "Net cost is the hit to take-home. Employee, employer, and State are the three AE slices. Occupational and PRSA have no State top-up. Into pot is the sum that actually invests.";
+
+export const CHART_SCHEDULE_SUMMARY = "How AE contributions step up on the scheme calendar.";
+export const CHART_SCHEDULE_DETAIL =
+  "Phases follow the law, not years of membership. Pay is capped at €80,000. From 2035 the total is 14% of assessable pay, split across you, the employer, and the State.";
+
+export const CHART_PROJECTION_SUMMARY = "Both pots grown on the same return, with AE's fees and rate steps.";
+export const CHART_PROJECTION_DETAIL =
+  "AE uses the calendar rates, the €80,000 cap, 55c a week admin while you pay in, and the AE investment fee. The other line uses the workplace rates and fee you set. Opt-out and suspend only change the AE line.";
+
+export const CHART_WINS_SUMMARY = "Euros into the pot this year per euro of take-home cost, across salary.";
+export const CHART_WINS_DETAIL =
+  "Higher is better value. The workplace line usually jumps when you cross the standard-rate band. The AE line flattens once pay is above €80,000 because extra salary is ignored.";

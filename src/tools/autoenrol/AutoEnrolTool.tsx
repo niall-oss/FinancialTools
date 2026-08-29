@@ -18,7 +18,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Chart } from "@/components/app/Chart";
 import { ConfigCheckboxField } from "@/components/app/CheckboxField";
-import { FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
+import { ChartExplainer, FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField, SelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
@@ -43,7 +43,18 @@ import type { SchemeType } from "@/tools/pension/engine";
 import {
   ADMIN_FEE_HINT,
   AE_FEE_HINT,
+  AE_STAT_HINT,
   ALT_FEE_HINT,
+  CHART_PROJECTION_DETAIL,
+  CHART_PROJECTION_SUMMARY,
+  CHART_SCHEDULE_DETAIL,
+  CHART_SCHEDULE_SUMMARY,
+  CHART_TAKEHOME_DETAIL,
+  CHART_TAKEHOME_SUMMARY,
+  CHART_WINS_DETAIL,
+  CHART_WINS_SUMMARY,
+  CHART_YEAR_DETAIL,
+  CHART_YEAR_SUMMARY,
   COMPARE_PRESET_HINT,
   COMPARE_SCHEME_HINT,
   CURRENT_FUND_HINT,
@@ -492,6 +503,7 @@ export function AutoEnrolTool() {
               label="AE into pot"
               value={formatEur(result.ae.totalIntoPot)}
               tone={result.aePutsMoreInPot ? "pass" : "default"}
+              hint={AE_STAT_HINT}
             />
             <StatCard
               label={`${altName} into pot`}
@@ -502,19 +514,24 @@ export function AutoEnrolTool() {
               label="AE net cost"
               value={formatEur(result.ae.netCost)}
               tone={!result.altCostsLessTakeHome ? "pass" : "default"}
+              hint={AE_STAT_HINT}
             />
             <StatCard
               label={`${altName} net cost`}
               value={formatEur(result.alt.netCost)}
               tone={result.altCostsLessTakeHome ? "pass" : "default"}
             />
-            <StatCard label="AE pot per € net" value={ratioLabel(result.ae.potPerNetCost)} />
+            <StatCard
+              label="AE pot per € net"
+              value={ratioLabel(result.ae.potPerNetCost)}
+              hint={AE_STAT_HINT}
+            />
             <StatCard label={`${altName} pot per € net`} value={ratioLabel(result.alt.potPerNetCost)} />
-            <StatCard label="AE employee" value={formatEur(result.ae.employee)} />
-            <StatCard label="AE employer" value={formatEur(result.ae.employer)} />
-            <StatCard label="AE State top-up" value={formatEur(result.ae.state)} />
-            <StatCard label="AE admin fee" value={formatEur(result.ae.adminFee, 2)} />
-            <StatCard label="Tax saved (AE)" value={formatEur(result.ae.taxSaved)} />
+            <StatCard label="AE employee" value={formatEur(result.ae.employee)} hint={AE_STAT_HINT} />
+            <StatCard label="AE employer" value={formatEur(result.ae.employer)} hint={AE_STAT_HINT} />
+            <StatCard label="AE State top-up" value={formatEur(result.ae.state)} hint={AE_STAT_HINT} />
+            <StatCard label="AE admin fee" value={formatEur(result.ae.adminFee, 2)} hint={AE_STAT_HINT} />
+            <StatCard label="Tax saved (AE)" value={formatEur(result.ae.taxSaved)} hint={AE_STAT_HINT} />
             <StatCard label={`Tax saved (${altName})`} value={formatEur(result.alt.taxSaved)} />
           </StatGrid>
 
@@ -536,6 +553,7 @@ export function AutoEnrolTool() {
               <TabsTrigger value="wins">Who wins</TabsTrigger>
             </TabsList>
             <TabsContent value="takehome" className="mt-2">
+              <ChartExplainer summary={CHART_TAKEHOME_SUMMARY} detail={CHART_TAKEHOME_DETAIL} />
               <Chart
                 type="bar"
                 labels={takeHomeGroups.map((group) => group.label)}
@@ -567,12 +585,9 @@ export function AutoEnrolTool() {
                   },
                 ]}
               />
-              <FieldNote className="mt-2">
-                AE is taken from net pay, so the income-tax slice does not shrink. Occupational/PRSA
-                contributions reduce income tax only, not USC or PRSI.
-              </FieldNote>
             </TabsContent>
             <TabsContent value="year" className="mt-2">
+              <ChartExplainer summary={CHART_YEAR_SUMMARY} detail={CHART_YEAR_DETAIL} />
               <Chart
                 type="bar"
                 labels={["Net cost", "Employee", "Employer", "State", "Into pot"]}
@@ -601,6 +616,7 @@ export function AutoEnrolTool() {
               />
             </TabsContent>
             <TabsContent value="schedule" className="mt-2">
+              <ChartExplainer summary={CHART_SCHEDULE_SUMMARY} detail={CHART_SCHEDULE_DETAIL} />
               <Chart
                 type="bar"
                 labels={result.phaseSchedule.map((row) => row.label)}
@@ -622,12 +638,9 @@ export function AutoEnrolTool() {
                   },
                 ]}
               />
-              <FieldNote className="mt-2">
-                Phases follow the scheme calendar on this salary, capped at €80,000. From 2035 the total is
-                14% of assessable pay.
-              </FieldNote>
             </TabsContent>
             <TabsContent value="projection" className="mt-2">
+              <ChartExplainer summary={CHART_PROJECTION_SUMMARY} detail={CHART_PROJECTION_DETAIL} />
               {result.projection.length > 0 ? (
                 <Chart
                   type="line"
@@ -640,13 +653,9 @@ export function AutoEnrolTool() {
               ) : (
                 <FieldNote>Set years to contribute to see a pot projection.</FieldNote>
               )}
-              <FieldNote className="mt-2">
-                Same expected return. AE uses the calendar rate steps, the €80,000 cap, 55c weekly admin
-                while contributing, and the AE investment fee. {altName} uses your chosen rates and fee.
-                Opt-out and suspend only change the AE line.
-              </FieldNote>
             </TabsContent>
             <TabsContent value="wins" className="mt-2">
+              <ChartExplainer summary={CHART_WINS_SUMMARY} detail={CHART_WINS_DETAIL} />
               <Chart
                 type="line"
                 labels={result.salarySweep.map((point) => `${Math.round(point.salary / 1000)}k`)}
@@ -661,10 +670,6 @@ export function AutoEnrolTool() {
                   },
                 ]}
               />
-              <FieldNote className="mt-2">
-                Euros into the pot this year per euro of take-home cost, across salary. The occupational/PRSA
-                line usually jumps at the standard-rate band. The AE line flattens once pay is above €80,000.
-              </FieldNote>
             </TabsContent>
           </Tabs>
 

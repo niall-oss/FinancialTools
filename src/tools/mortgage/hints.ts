@@ -8,7 +8,10 @@ export const DEPOSIT_PCT_HINT =
   "Percentage or euro amount. Central Bank rules want at least 10% for an owner-occupier, 30% for buy-to-let.";
 
 export const INTEREST_RATE_HINT =
-  "Rate before any green discount.";
+  "Rate before any green discount. This is the opening period rate.";
+
+export const RATE_SCHEDULE_HINT =
+  "Most Irish mortgages fix for a few years, then go variable. Add later periods to forecast that. You can change the rate at most once per year. Only variable years move in the +1% / −1% interest chart. Later rates are a guess, not a quote.";
 
 export const GREEN_MORTGAGE_HINT =
   "Some lenders cut the fixed rate if the BER is A0, A, or B. Products are usually fixed. Switching early can mean breakage fees.";
@@ -68,7 +71,16 @@ export const HOME_INSURANCE_HINT =
   "Buildings insurance, required by the lender. Often €300 to €800 a year, depending on cover.";
 
 export const LPT_ADJUSTMENT_HINT =
-  "Local authorities can vary LPT by up to 15% either way from the national basic rate. Several Dublin councils add the full 15%.";
+  "Local Property Tax. Councils can vary the national basic rate by up to 15% either way. Several Dublin councils add the full 15%. The yearly charge after this % is the LPT (annual) figure on the right.";
+
+export const LPT_ANNUAL_HINT =
+  "Local Property Tax. Yearly Revenue charge on the home's value, from the 2026–2030 bands, then your council's %.";
+
+export const HTB_APPLIED_HINT =
+  "Help to Buy. The refund actually used against cash at completion, after Revenue caps.";
+
+export const FHS_EQUITY_STAT_HINT =
+  "First Home Scheme. The State's equity stake, which cuts the mortgage, not stamp duty.";
 
 export const OVERPAYMENT_HINT =
   "Extra payments cut the interest you pay and can shorten the term. On a fixed rate, check breakage fees first.";
@@ -87,3 +99,30 @@ export const LTV_HINT =
 
 export const DISCLAIMER =
   "Illustrative only; not mortgage advice. Lenders apply individual credit policies and net disposable income tests.";
+
+export const CHART_AMORTIZATION_SUMMARY =
+  "Each year, how much of your payment reduces the loan versus interest.";
+export const CHART_AMORTIZATION_DETAIL =
+  "Amortization is that split. Early years are mostly interest. Later years pay down more of the loan. The two areas add up to what you paid that year.";
+
+export const CHART_BALANCE_SUMMARY = "What you still owe at the end of each year.";
+export const CHART_BALANCE_DETAIL =
+  "Starts at the loan amount and falls as you pay principal. Overpayments and a rate step change the slope.";
+
+export const CHART_PAYDOWN_SUMMARY =
+  "How fast the balance falls, with and without extra payments if you set them.";
+export const CHART_PAYDOWN_DETAIL =
+  "With an overpayment, two lines compare the remaining balance. Without one, the line is that year's principal as a share of the opening balance.";
+
+export const CHART_PRINCIPAL_SUMMARY = "How much of the loan you actually paid off each year.";
+export const CHART_PRINCIPAL_DETAIL =
+  "This is principal only, not interest. Extra monthly or lump-sum payments show as a second series when you set them.";
+
+export const CHART_UPFRONT_SUMMARY = "Cash you need at purchase, besides the ongoing mortgage.";
+export const CHART_UPFRONT_DETAIL =
+  "Deposit, stamp duty, and fees (solicitor, valuation, survey, land registry). Help to Buy can cut the cash you bring.";
+
+export const CHART_INTEREST_SUMMARY =
+  "Annual interest on your rates, and if variable years move 1% either way.";
+export const CHART_INTEREST_DETAIL =
+  "Your rates uses the periods you set. The other two lines add or subtract 1% on variable years only. Fixed years do not move. That is the rate-risk picture after a fix ends.";

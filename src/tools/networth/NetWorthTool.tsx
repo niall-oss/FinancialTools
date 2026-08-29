@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Chart } from "@/components/app/Chart";
-import { FieldNote } from "@/components/app/FieldChrome";
+import { ChartExplainer, FieldNote } from "@/components/app/FieldChrome";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
 import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import {
@@ -29,7 +29,16 @@ import {
   type NetWorthSide,
   type NetWorthState,
 } from "@/tools/networth/engine";
-import { DISCLAIMER, GROUP_HINT } from "@/tools/networth/hints";
+import {
+  CHART_ACCESS_DETAIL,
+  CHART_ACCESS_SUMMARY,
+  CHART_GROUPS_DETAIL,
+  CHART_GROUPS_SUMMARY,
+  CHART_MIX_DETAIL,
+  CHART_MIX_SUMMARY,
+  DISCLAIMER,
+  GROUP_HINT,
+} from "@/tools/networth/hints";
 
 function persist(config: ReturnType<typeof useConfigStore>, state: NetWorthState): void {
   config.setSection("networth", serializeNetWorthState(state));
@@ -305,6 +314,7 @@ export function NetWorthTool() {
               <TabsTrigger value="access">Access</TabsTrigger>
             </TabsList>
             <TabsContent value="groups" className="mt-2">
+              <ChartExplainer summary={CHART_GROUPS_SUMMARY} detail={CHART_GROUPS_DETAIL} />
               {assetSlices.length === 0 && liabilitySlices.length === 0 ? (
                 <FieldNote>Add amounts to see a group breakdown.</FieldNote>
               ) : (
@@ -325,6 +335,7 @@ export function NetWorthTool() {
               )}
             </TabsContent>
             <TabsContent value="mix" className="mt-2">
+              <ChartExplainer summary={CHART_MIX_SUMMARY} detail={CHART_MIX_DETAIL} />
               {result.mix.length > 0 ? (
                 <Chart
                   type="bar"
@@ -339,14 +350,9 @@ export function NetWorthTool() {
               )}
             </TabsContent>
             <TabsContent value="access" className="mt-2">
+              <ChartExplainer summary={CHART_ACCESS_SUMMARY} detail={CHART_ACCESS_DETAIL} />
               {accessSlices.length > 0 ? (
-                <>
-                  <Chart type="pie" slices={accessSlices} />
-                  <FieldNote className="mt-2">
-                    Accessible is cash plus investments. Pensions are locked. Property is illiquid. Everything else
-                    sits in other.
-                  </FieldNote>
-                </>
+                <Chart type="pie" slices={accessSlices} />
               ) : (
                 <FieldNote>Add assets to see how much is accessible.</FieldNote>
               )}

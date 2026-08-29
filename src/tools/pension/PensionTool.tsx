@@ -19,7 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Chart } from "@/components/app/Chart";
 import { ConfigCheckboxField } from "@/components/app/CheckboxField";
-import { FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
+import { ChartExplainer, FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
@@ -43,6 +43,16 @@ import {
 import {
   AVC_HINT,
   BROUGHT_FORWARD_HINT,
+  CHART_AGE_DETAIL,
+  CHART_AGE_SUMMARY,
+  CHART_BANDS_DETAIL,
+  CHART_BANDS_SUMMARY,
+  CHART_INCREASE_DETAIL,
+  CHART_INCREASE_SUMMARY,
+  CHART_PROJECTION_DETAIL,
+  CHART_PROJECTION_SUMMARY,
+  CHART_TAKEHOME_DETAIL,
+  CHART_TAKEHOME_SUMMARY,
   COMPARE_BANDS_HINT,
   CURRENT_FUND_HINT,
   DISCLAIMER,
@@ -551,6 +561,7 @@ export function PensionTool() {
               {compareOn ? <TabsTrigger value="bands">Band compare</TabsTrigger> : null}
             </TabsList>
             <TabsContent value="takehome" className="mt-2">
+              <ChartExplainer summary={CHART_TAKEHOME_SUMMARY} detail={CHART_TAKEHOME_DETAIL} />
               <Chart
                 type="bar"
                 labels={takeHomeGroups.map((group) => group.label)}
@@ -584,6 +595,7 @@ export function PensionTool() {
               />
             </TabsContent>
             <TabsContent value="increase" className="mt-2">
+              <ChartExplainer summary={CHART_INCREASE_SUMMARY} detail={CHART_INCREASE_DETAIL} />
               <Chart
                 type="line"
                 labels={result.increaseSeries.map((point) => `${point.contribPct}%`)}
@@ -600,13 +612,9 @@ export function PensionTool() {
                     : []),
                 ]}
               />
-              <FieldNote className="mt-2">
-                Employee contribution as % of earnings, from 0% to this year&apos;s age cap (
-                {formatPct(result.agePct, 0)}). The kink is where relief drops from the higher rate to the
-                standard rate.
-              </FieldNote>
             </TabsContent>
             <TabsContent value="age" className="mt-2">
+              <ChartExplainer summary={CHART_AGE_SUMMARY} detail={CHART_AGE_DETAIL} />
               <Chart
                 type="bar"
                 labels={result.ageBandRows.map((row) => row.label)}
@@ -614,6 +622,7 @@ export function PensionTool() {
               />
             </TabsContent>
             <TabsContent value="projection" className="mt-2">
+              <ChartExplainer summary={CHART_PROJECTION_SUMMARY} detail={CHART_PROJECTION_DETAIL} />
               {result.projection.length > 0 ? (
                 <Chart
                   type="line"
@@ -627,13 +636,10 @@ export function PensionTool() {
               ) : (
                 <FieldNote>Set years to contribute to see a pot projection.</FieldNote>
               )}
-              <FieldNote className="mt-2">
-                Pension growth is tax-deferred (no 8-year deemed disposal). Always-max steps the employee %
-                at 30, 40, 50, 55 and 60.
-              </FieldNote>
             </TabsContent>
             {compareOn && result.compare ? (
               <TabsContent value="bands" className="mt-2">
+                <ChartExplainer summary={CHART_BANDS_SUMMARY} detail={CHART_BANDS_DETAIL} />
                 <Chart
                   type="bar"
                   labels={["Tax saved", "Income tax left", "Take-home"]}

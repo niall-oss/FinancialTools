@@ -34,6 +34,7 @@ deposit_pct=10
 deposit_input_mode=pct
 deposit_amount=40000
 interest_rate_pct=3.8
+rate_schedule=fixed|30|3.8
 term_years=30
 buyer_type=ftb
 property_type=new_build

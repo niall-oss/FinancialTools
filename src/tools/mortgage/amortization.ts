@@ -1,3 +1,6 @@
+import type { RatePeriod } from "./rate-schedule";
+import { expandRateByYear } from "./rate-schedule";
+
 /** Monthly mortgage payment (standard amortization). */
 export function calculateMonthlyPayment(
   loanAmount: number,
@@ -35,8 +38,9 @@ export interface AmortizationResult {
 
 export function runAmortizationSchedule(input: {
   loanAmount: number;
-  annualRatePct: number;
+  annualRatePct?: number;
   termYears: number;
+  ratePeriods?: RatePeriod[];
   overpaymentMonthly?: number;
   overpaymentMonthlyStartYear?: number;
   overpaymentLumpSum?: number;
@@ -46,12 +50,18 @@ export function runAmortizationSchedule(input: {
   const overpaymentMonthlyStartYear = input.overpaymentMonthlyStartYear ?? 1;
   const overpaymentLumpSum = input.overpaymentLumpSum ?? 0;
   const overpaymentLumpSumStartYear = input.overpaymentLumpSumStartYear ?? 1;
-  const monthlyRate = input.annualRatePct / 100 / 12;
-  const basePayment = calculateMonthlyPayment(
+  const rateByYear =
+    input.ratePeriods && input.ratePeriods.length > 0
+      ? expandRateByYear(input.ratePeriods, input.termYears)
+      : null;
+  let currentRate = rateByYear?.[0]?.ratePct ?? input.annualRatePct ?? 0;
+  let monthlyRate = currentRate / 100 / 12;
+  let basePayment = calculateMonthlyPayment(
     input.loanAmount,
-    input.annualRatePct,
+    currentRate,
     input.termYears,
   );
+  const openingPayment = basePayment;
 
   let balance = input.loanAmount;
   let lumpSumApplied = false;
@@ -65,6 +75,13 @@ export function runAmortizationSchedule(input: {
 
   for (let month = 1; month <= maxMonths && balance > 0.01; month++) {
     const year = Math.ceil(month / 12);
+    const yearRate = rateByYear?.[year - 1]?.ratePct;
+    if (yearRate !== undefined && yearRate !== currentRate) {
+      currentRate = yearRate;
+      monthlyRate = currentRate / 100 / 12;
+      const remainingYears = (input.termYears * 12 - month + 1) / 12;
+      basePayment = calculateMonthlyPayment(balance, currentRate, remainingYears);
+    }
 
     if (
       !lumpSumApplied &&
@@ -107,7 +124,7 @@ export function runAmortizationSchedule(input: {
   }
 
   const totalRepaid = input.loanAmount + totalInterest;
-  const monthlyPayment = basePayment + (overpaymentMonthly > 0 ? overpaymentMonthly : 0);
+  const monthlyPayment = openingPayment + (overpaymentMonthly > 0 ? overpaymentMonthly : 0);
 
   return {
     monthlyPayment,
@@ -126,17 +143,24 @@ export function compareOverpayment(
   overpaymentLumpSum: number,
   overpaymentMonthlyStartYear = 1,
   overpaymentLumpSumStartYear = 1,
+  ratePeriods?: RatePeriod[],
 ): {
   baseline: AmortizationResult;
   withOverpayment: AmortizationResult;
   interestSaved: number;
   monthsSaved: number;
 } {
-  const baseline = runAmortizationSchedule({ loanAmount, annualRatePct, termYears });
+  const baseline = runAmortizationSchedule({
+    loanAmount,
+    annualRatePct,
+    termYears,
+    ratePeriods,
+  });
   const withOverpayment = runAmortizationSchedule({
     loanAmount,
     annualRatePct,
     termYears,
+    ratePeriods,
     overpaymentMonthly,
     overpaymentMonthlyStartYear,
     overpaymentLumpSum,

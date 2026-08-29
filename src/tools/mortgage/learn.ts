@@ -47,6 +47,12 @@ export const mortgageLearn: LearnContent = {
       sourceIds: ["rev-lpt"],
     },
     {
+      id: "fixed-variable",
+      title: "Fixed and variable rates",
+      body: "The opening deal is often fixed for 2 to 5 years. After that the rate can move. This tool lets you set later periods as a forecast, with at most one change per year.\n\nThe interest chart shows your schedule next to the same path with variable periods 1% higher and 1% lower. Fixed years stay put on those lines. That is a sensitivity check, not a prediction.",
+      sourceIds: ["ci-mortgage"],
+    },
+    {
       id: "overpay",
       title: "Overpayments",
       body: "Extra monthly payments or a lump sum cut the interest you pay and can shorten the term. On a variable rate this is usually straightforward. On a fixed rate, check breakage fees before you overpay.\n\nThe tool can start the extra from a later year, which is useful if you expect a raise or a bonus rather than spare cash from day one.",
