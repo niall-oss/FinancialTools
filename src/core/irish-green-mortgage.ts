@@ -75,7 +75,7 @@ export function resolveGreenMortgage(input: GreenMortgageInput): GreenMortgageRe
   } else {
     greenDiscountPct = 0;
     warnings.push(
-      "BER rating below B does not qualify for standard green rates. Enter a discount override if your lender offers one (e.g. Bank of Ireland EcoSaver).",
+      "BER below B does not qualify for the usual green rate. Type your lender's discount if they still give you one, like Bank of Ireland EcoSaver.",
     );
   }
 

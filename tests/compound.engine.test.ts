@@ -18,7 +18,6 @@ const baseInput = {
   incomeTaxFromProfile: true,
   incomeTaxManualRatePct: 40,
   annualSalary: 85000,
-  inflationAdjustment: false,
   inflationRatePct: 2.5,
 };
 
@@ -91,13 +90,50 @@ describe("runCompoundSimulation", () => {
     expect(highEarner.totalTax).toBeGreaterThan(manual20.totalTax);
   });
 
-  it("reduces returns when inflation adjustment enabled", () => {
-    const nominal = runCompoundSimulation(baseInput);
-    const real = runCompoundSimulation({
+  it("keeps real equal to nominal at 0% inflation", () => {
+    const result = runCompoundSimulation({ ...baseInput, inflationRatePct: 0 });
+    expect(result.finalRealBalance).toBe(result.finalBalance);
+    for (const year of result.years) {
+      expect(year.realBalance).toBe(year.balance);
+    }
+  });
+
+  it("deflates a lump sum by cumulative inflation", () => {
+    const result = runCompoundSimulation({
       ...baseInput,
-      inflationAdjustment: true,
+      initialInvestment: 10000,
+      monthlyContribution: 0,
+      years: 1,
+      annualReturnPct: 0,
+      annualFeePct: 0,
+      taxMode: "none",
+      inflationRatePct: 10,
+    });
+    expect(result.finalBalance).toBeCloseTo(10000);
+    expect(result.finalRealBalance).toBeCloseTo(10000 / 1.1);
+  });
+
+  it("still taxes the nominal path when inflation is set", () => {
+    const inflated = runCompoundSimulation({
+      ...baseInput,
+      years: 16,
+      taxMode: "deemed_disposal",
+      deemedDisposalRatePct: 38,
+      deemedDisposalIntervalYears: 8,
       inflationRatePct: 2.5,
     });
-    expect(real.finalBalance).toBeLessThan(nominal.finalBalance);
+    const zeroInflation = runCompoundSimulation({
+      ...baseInput,
+      years: 16,
+      taxMode: "deemed_disposal",
+      deemedDisposalRatePct: 38,
+      deemedDisposalIntervalYears: 8,
+      inflationRatePct: 0,
+    });
+    expect(inflated.taxEvents.length).toBeGreaterThanOrEqual(2);
+    expect(inflated.taxEvents[0].year).toBe(8);
+    expect(inflated.totalTax).toBe(zeroInflation.totalTax);
+    expect(inflated.finalBalance).toBe(zeroInflation.finalBalance);
+    expect(inflated.finalRealBalance).toBeLessThan(inflated.finalBalance);
   });
 });

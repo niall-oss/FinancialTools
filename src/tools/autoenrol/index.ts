@@ -7,7 +7,7 @@ import { autoenrolLearn } from "./learn";
 export const autoenrolTool: ToolDefinition = {
   id: "autoenrol",
   title: "My Future Fund",
-  description: "Irish auto-enrolment contributions, opt-out, and how it compares with occupational/PRSA relief.",
+  description: "2026 My Future Fund rates, opt-out, and a side-by-side with a workplace scheme.",
   icon: Wallet,
   configKeys: [...AUTOENROL_KEYS],
   component: AutoEnrolTool,

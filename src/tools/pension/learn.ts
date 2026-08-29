@@ -2,7 +2,7 @@ import type { LearnContent } from "@/learn/types";
 
 export const pensionLearn: LearnContent = {
   overview:
-    "This calculator shows how much of your contribution gets income-tax relief under Irish age bands, what that saves you this year, and how extra contributions might grow. It does not model drawdown, lump sums, or ARFs.",
+    "How much of this year's contribution gets income-tax relief, what that saves you, and how extra contributions might grow. No drawdown, lump sums, or ARFs.",
   topics: [
     {
       id: "age-bands",

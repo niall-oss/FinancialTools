@@ -7,7 +7,7 @@ import { networthLearn } from "./learn";
 export const networthTool: ToolDefinition = {
   id: "networth",
   title: "Net worth snapshot",
-  description: "Manual asset and liability list, grouped for mix and access charts.",
+  description: "Type what you own and owe. Charts by group and how easy the money is to reach.",
   icon: Wallet,
   configKeys: [...NETWORTH_KEYS],
   component: NetWorthTool,

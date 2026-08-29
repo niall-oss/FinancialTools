@@ -94,13 +94,13 @@ export function getMortgageFieldErrors(input: MortgageInput): MortgageFieldError
         addError(
           errors,
           "deposit",
-          `Deposit is too low — maximum mortgage is ${borrowing.ltvMaxPct}% of the property value.`,
+          `Deposit is too low. Maximum mortgage is ${borrowing.ltvMaxPct}% of the property value.`,
         );
       } else if (borrowing.maxLoanByLti !== null) {
         addError(
           errors,
           "property_price",
-          `Property is too expensive for your income — maximum loan is €${Math.round(borrowing.maxLoanAllowed).toLocaleString("en-IE")} (${borrowing.ltiMultiple}× gross income).`,
+          `Property is too expensive for your income. Maximum loan is €${Math.round(borrowing.maxLoanAllowed).toLocaleString("en-IE")} (${borrowing.ltiMultiple}× gross income).`,
         );
       }
     }

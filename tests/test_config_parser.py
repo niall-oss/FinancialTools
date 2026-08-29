@@ -14,14 +14,14 @@ age=34
 
 [compound]
 tax_mode=deemed_disposal
-inflation_adjustment=true
+income_tax_from_profile=true
 annual_return_pct=7.0
 """
     data = parse_config(text)
     assert data["profile"]["annual_salary"] == 85000
     assert data["profile"]["age"] == 34
     assert data["compound"]["tax_mode"] == "deemed_disposal"
-    assert data["compound"]["inflation_adjustment"] is True
+    assert data["compound"]["income_tax_from_profile"] is True
     assert data["compound"]["annual_return_pct"] == 7.0
 
 

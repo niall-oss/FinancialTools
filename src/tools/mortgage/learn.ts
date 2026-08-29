@@ -2,7 +2,7 @@ import type { LearnContent } from "@/learn/types";
 
 export const mortgageLearn: LearnContent = {
   overview:
-    "This calculator estimates how much you can borrow under Central Bank limits, what the monthly repayment looks like, and the extra costs of buying in Ireland. The limits are caps, not a promise a lender will offer that amount.",
+    "Estimates the Central Bank cap, the monthly repayment, and the extra costs of buying in Ireland. The cap is not a promise a lender will offer that amount.",
   topics: [
     {
       id: "lti-ltv",
@@ -19,7 +19,7 @@ export const mortgageLearn: LearnContent = {
     {
       id: "htb",
       title: "Help to Buy",
-      body: "Help to Buy refunds Irish income tax and DIRT you paid in the previous four years, to help with the deposit on a new home. The cap is the lowest of €30,000, 10% of the price, or tax actually paid. The property must be a new build at or under €500,000, you must live in it, and the mortgage must be at least 70% of the price.\n\nIt does not apply to second-hand homes. The refund is not free money from a separate pot. It is tax you already paid, coming back.",
+      body: "Help to Buy refunds Irish income tax and DIRT you paid in the previous four years, to help with the deposit on a new home. The cap is the lowest of €30,000, 10% of the price, or tax actually paid. The property must be a new build at or under €500,000. You must live in it. The mortgage must be at least 70% of the price.\n\nIt does not apply to second-hand homes. The refund is not free money from a separate pot. It is tax you already paid, coming back.",
       sourceIds: ["rev-htb", "ci-htb"],
     },
     {

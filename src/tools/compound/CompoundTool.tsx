@@ -8,10 +8,14 @@ import { ConfigSelectField, SelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
 import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import type { TaxMode } from "@/core/config/schema";
-import { formatEur } from "@/core/format";
+import { formatEur, formatPct } from "@/core/format";
 import { describeIrishIncomeTaxFromProfile, resolveTaxIe } from "@/core/irish-income-tax";
 import { useConfigStore } from "@/hooks/use-config";
-import { runCompoundSimulation, runSensitivityAnalysis } from "@/tools/compound/engine";
+import {
+  fisherRealReturnPct,
+  runCompoundSimulation,
+  runSensitivityAnalysis,
+} from "@/tools/compound/engine";
 import { DISCLAIMER } from "@/tools/compound/hints";
 
 const TAX_MODE_OPTIONS = [
@@ -27,10 +31,10 @@ const INCOME_TAX_RATE_OPTIONS = [
 ];
 
 const INCOME_TAX_PROFILE_HINT =
-  "Irish PAYE: gains are taxed at the standard rate within your remaining standard rate band (from Irish tax bands minus salary), then at the higher rate.";
+  "Gains use whatever is left of your standard-rate band after salary, then the higher rate. Bands come from the home page.";
 
-const INFLATION_ADJUSTED_HINT =
-  "Subtracts the inflation rate from your expected return so projections reflect real (inflation-adjusted) purchasing power rather than nominal figures.";
+const INFLATION_RATE_HINT =
+  "Deflates the pot into today's euros. Compounding, tax, and fees still run on the nominal path.";
 
 export function CompoundTool() {
   const config = useConfigStore();
@@ -48,12 +52,12 @@ export function CompoundTool() {
     incomeTaxFromProfile: config.getBoolean("compound", "income_tax_from_profile", true),
     incomeTaxManualRatePct: config.getNumber("compound", "income_tax_manual_rate_pct", 40),
     annualSalary: config.getNumber("profile", "annual_salary"),
-    inflationAdjustment: config.getBoolean("compound", "inflation_adjustment"),
     inflationRatePct: config.getNumber("compound", "inflation_rate_pct"),
     taxIe: resolveTaxIe(config),
   };
 
   const result = runCompoundSimulation(input);
+  const approxRealReturnPct = fisherRealReturnPct(input.annualReturnPct, input.inflationRatePct);
   const labels = result.years.map((year) => `Y${year.year}`);
   const sensitivityRates = Array.from({ length: 9 }, (_, i) => input.annualReturnPct - 4 + i);
   const sensitivity = runSensitivityAnalysis(input, sensitivityRates);
@@ -85,17 +89,12 @@ export function CompoundTool() {
                   label="Expected annual return (%)"
                   step={0.1}
                 />
-                <ConfigCheckboxField
-                  section="compound"
-                  configKey="inflation_adjustment"
-                  label="Inflation-adjusted returns"
-                  hint={INFLATION_ADJUSTED_HINT}
-                />
                 <ConfigNumberField
                   section="compound"
                   configKey="inflation_rate_pct"
                   label="Inflation rate (%)"
                   step={0.1}
+                  hint={INFLATION_RATE_HINT}
                 />
               </FieldGrid>
             </CardContent>
@@ -158,6 +157,7 @@ export function CompoundTool() {
         <ResultsPanel>
           <StatGrid>
             <StatCard label="Final balance" value={formatEur(result.finalBalance)} />
+            <StatCard label="Final (today's €)" value={formatEur(result.finalRealBalance)} />
             <StatCard label="Total contributed" value={formatEur(result.totalContributions)} />
             <StatCard label="Total fees" value={formatEur(result.totalFees)} />
             <StatCard label="Total tax" value={formatEur(result.totalTax)} />
@@ -165,6 +165,7 @@ export function CompoundTool() {
               label="Net growth"
               value={formatEur(result.finalBalance - result.totalContributions)}
             />
+            <StatCard label="Approx. real return" value={formatPct(approxRealReturnPct)} />
           </StatGrid>
 
           <Tabs defaultValue="balance">
@@ -179,8 +180,8 @@ export function CompoundTool() {
                 type="line"
                 labels={labels}
                 series={[
-                  { name: "Net balance", data: result.years.map((year) => year.balance) },
-                  { name: "Gross (before tax/fees)", data: result.years.map((year) => year.grossBalance) },
+                  { name: "Nominal", data: result.years.map((year) => year.balance) },
+                  { name: "Today's €", data: result.years.map((year) => year.realBalance) },
                 ]}
               />
             </TabsContent>
@@ -219,8 +220,7 @@ export function CompoundTool() {
               <FieldNote className="mt-2">
                 Each dot is a full rerun of this plan at a different annual return, from{" "}
                 {input.annualReturnPct - 4}% to {input.annualReturnPct + 4}%. Your expected{" "}
-                {input.annualReturnPct}% sits in the middle. Contributions, fees, tax, and inflation stay as
-                you set them.
+                {input.annualReturnPct}% sits in the middle. Contributions, fees, and tax stay as you set them.
               </FieldNote>
             </TabsContent>
           </Tabs>

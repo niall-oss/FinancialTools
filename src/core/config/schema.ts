@@ -26,7 +26,6 @@ export const DEFAULTS: ConfigData = {
     cgt_rate_pct: 33,
     income_tax_from_profile: true,
     income_tax_manual_rate_pct: 40,
-    inflation_adjustment: false,
     inflation_rate_pct: 2.5,
   },
   mortgage: {
@@ -152,7 +151,6 @@ export const COMPOUND_KEYS = [
   "cgt_rate_pct",
   "income_tax_from_profile",
   "income_tax_manual_rate_pct",
-  "inflation_adjustment",
   "inflation_rate_pct",
 ] as const;
 
@@ -270,5 +268,6 @@ export function mergeWithDefaults(parsed: ConfigData): ConfigData {
     }
   }
   delete merged.profile?.tax_residency;
+  delete merged.compound?.inflation_adjustment;
   return merged;
 }

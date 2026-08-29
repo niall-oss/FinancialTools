@@ -62,7 +62,7 @@ def parse_config(text: str) -> ConfigData:
 
 def serialize_config(data: ConfigData) -> str:
     """Serialize config dict back to .txt format."""
-    lines: list[str] = ["# Irish Financial Tools — config", ""]
+    lines: list[str] = ["# Irish Financial Tools config", ""]
     for section, values in data.items():
         lines.append(f"[{section}]")
         for key, value in values.items():
