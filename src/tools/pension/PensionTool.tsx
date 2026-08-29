@@ -23,7 +23,7 @@ import { FieldGrid, FieldNote, HintLabel } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
-import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
+import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import { TAX_IE_KEYS } from "@/core/config/schema";
 import { formatEur, formatPct } from "@/core/format";
 import {
@@ -543,7 +543,7 @@ export function PensionTool() {
           <FieldNote>{PRSI_USC_NOTE}</FieldNote>
 
           <Tabs defaultValue="takehome">
-            <TabsList className="flex w-full flex-wrap">
+            <TabsList className={chartTabsListClass}>
               <TabsTrigger value="takehome">Take-home</TabsTrigger>
               <TabsTrigger value="increase">Increase</TabsTrigger>
               <TabsTrigger value="age">Age bands</TabsTrigger>

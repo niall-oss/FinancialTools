@@ -6,7 +6,7 @@ import { FieldGrid, FieldNote } from "@/components/app/FieldChrome";
 import { ConfigNumberField } from "@/components/app/NumberField";
 import { ConfigSelectField, SelectField } from "@/components/app/SelectField";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
-import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
+import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import type { TaxMode } from "@/core/config/schema";
 import { formatEur, formatPct } from "@/core/format";
 import { describeIrishIncomeTaxFromProfile, resolveTaxIe } from "@/core/irish-income-tax";
@@ -169,7 +169,7 @@ export function CompoundTool() {
           </StatGrid>
 
           <Tabs defaultValue="balance">
-            <TabsList className="flex w-full flex-wrap">
+            <TabsList className={chartTabsListClass}>
               <TabsTrigger value="balance">Balance</TabsTrigger>
               <TabsTrigger value="mix">Mix</TabsTrigger>
               <TabsTrigger value="tax">Tax</TabsTrigger>

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Chart } from "@/components/app/Chart";
 import { FieldNote } from "@/components/app/FieldChrome";
 import { StatCard, StatGrid } from "@/components/app/StatCard";
-import { ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
+import { chartTabsListClass, ResultsPanel, ToolLayout } from "@/components/app/ToolLayout";
 import {
   Accordion,
   AccordionContent,
@@ -142,7 +142,7 @@ export function NetWorthTool() {
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-xs"
+                size="icon-sm"
                 className="shrink-0 text-muted-foreground"
                 aria-label={`Delete ${group} group`}
                 onClick={() => commit(removeGroup(state, side, group))}
@@ -166,7 +166,7 @@ export function NetWorthTool() {
                       step={100}
                       aria-label={`${item.name || "Item"} amount`}
                       value={Number.isFinite(item.amount) ? item.amount : ""}
-                      className="w-28 shrink-0 px-2.5 font-mono text-sm tabular-nums"
+                      className="min-w-0 w-24 shrink-0 px-2.5 font-mono text-sm tabular-nums sm:w-28"
                       onChange={(event) => {
                         const next = Number(event.target.value);
                         commit(updateItem(state, item.id, { amount: Number.isNaN(next) ? 0 : next }));
@@ -175,7 +175,7 @@ export function NetWorthTool() {
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-xs"
+                      size="icon-sm"
                       className="shrink-0 text-muted-foreground"
                       aria-label={`Remove ${item.name || "item"}`}
                       onClick={() => commit(removeItem(state, item.id))}
@@ -299,7 +299,7 @@ export function NetWorthTool() {
           )}
 
           <Tabs defaultValue="groups">
-            <TabsList className="flex w-full flex-wrap">
+            <TabsList className={chartTabsListClass}>
               <TabsTrigger value="groups">Groups</TabsTrigger>
               <TabsTrigger value="mix">Mix</TabsTrigger>
               <TabsTrigger value="access">Access</TabsTrigger>

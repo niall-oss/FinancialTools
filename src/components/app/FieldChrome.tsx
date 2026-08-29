@@ -1,6 +1,6 @@
 import { CircleHelp } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 export function HintLabel({
@@ -20,20 +20,20 @@ export function HintLabel({
         {children}
       </Label>
       {hint ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
+        <Popover>
+          <PopoverTrigger asChild>
             <button
               type="button"
-              className="inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-border text-[10px] font-bold text-muted-foreground"
+              className="-m-1.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground"
               aria-label={hint}
             >
-              <CircleHelp className="size-3" />
+              <CircleHelp className="size-3.5" />
             </button>
-          </TooltipTrigger>
-          <TooltipContent side="top" className="max-w-64 text-left font-normal">
+          </PopoverTrigger>
+          <PopoverContent align="start" side="top" className="w-72 max-w-[min(18rem,calc(100vw-2rem))] p-2.5 text-xs leading-snug">
             {hint}
-          </TooltipContent>
-        </Tooltip>
+          </PopoverContent>
+        </Popover>
       ) : null}
     </div>
   );
@@ -49,7 +49,7 @@ export function FieldError({ children }: { children: React.ReactNode }) {
 
 export function FieldGrid({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-x-3 gap-y-2.5">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-x-3 gap-y-2.5">
       {children}
     </div>
   );
