@@ -37,7 +37,7 @@ export function parseConfig(text: string): ConfigData {
 }
 
 export function serializeConfig(data: ConfigData): string {
-  const lines = ["# Irish Financial Tools — config", ""];
+  const lines = ["# Irish Financial Tools config", ""];
   for (const [section, values] of Object.entries(data)) {
     lines.push(`[${section}]`);
     for (const [key, value] of Object.entries(values)) {

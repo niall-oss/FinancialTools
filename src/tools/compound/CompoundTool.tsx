@@ -31,7 +31,7 @@ const INCOME_TAX_RATE_OPTIONS = [
 ];
 
 const INCOME_TAX_PROFILE_HINT =
-  "Irish PAYE: gains are taxed at the standard rate within your remaining standard rate band (from Irish tax bands minus salary), then at the higher rate.";
+  "Gains use whatever is left of your standard-rate band after salary, then the higher rate. Bands come from the home page.";
 
 const INFLATION_RATE_HINT =
   "Deflates the pot into today's euros. Compounding, tax, and fees still run on the nominal path.";

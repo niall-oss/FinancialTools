@@ -2,7 +2,7 @@ import type { LearnContent } from "@/learn/types";
 
 export const compoundLearn: LearnContent = {
   overview:
-    "This calculator projects how a lump sum plus monthly contributions grow over a chosen number of years. You can apply Irish tax treatments and an annual product fee. The results show the pot in euros and in today's purchasing power.",
+    "Projects a lump sum plus monthly contributions, with Irish tax and an annual fee. The chart shows the pot in euros and in today's purchasing power.",
   topics: [
     {
       id: "compounding",
@@ -25,7 +25,7 @@ export const compoundLearn: LearnContent = {
     {
       id: "deemed-disposal",
       title: "Deemed disposal on funds",
-      body: "Most Irish and EU-domiciled funds, including the UCITS ETFs Irish residents typically buy, are taxed as investment undertakings, not as shares. Every eight years Revenue treats you as if you sold, even if you still hold the units. That is deemed disposal.\n\nThe tax is exit tax. From 1 January 2026 the rate for individuals is 38%. It was 41%. You pay on the paper gain at each eight-year mark, then your cost basis steps up. You can owe cash when you have not sold anything.\n\nThis tool defaults to 38% every 8 years. Real lots bought on different dates have different clocks. Read the Revenue manuals if you are close to an anniversary.",
+      body: "Most Irish and EU-domiciled funds are taxed as investment undertakings, not as shares. That includes the UCITS ETFs Irish residents typically buy. Every eight years Revenue treats you as if you sold, even if you still hold the units. That is deemed disposal.\n\nThe tax is exit tax. From 1 January 2026 the rate for individuals is 38%. It was 41%. You pay on the paper gain at each eight-year mark, then your cost basis steps up. You can owe cash when you have not sold anything.\n\nThis tool defaults to 38% every 8 years. Real lots bought on different dates have different clocks. Read the Revenue manuals if you are close to an anniversary.",
       sourceIds: ["rev-exit-tax-tdm", "rev-ebrief-016-26"],
     },
     {

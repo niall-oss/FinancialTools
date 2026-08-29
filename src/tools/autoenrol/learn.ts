@@ -2,12 +2,12 @@ import type { LearnContent } from "@/learn/types";
 
 export const autoenrolLearn: LearnContent = {
   overview:
-    "My Future Fund is Ireland's auto-enrolment pension, run by NAERSA from 2026. This calculator sizes this year's contributions, opt-out and suspend paths, and a side-by-side with an occupational scheme or PRSA that does get income-tax relief.",
+    "My Future Fund is Ireland's auto-enrolment pension, run by NAERSA from 2026. This year's contributions, opt-out and suspend, and a side-by-side with a scheme that does get income-tax relief.",
   topics: [
     {
       id: "who",
       title: "Who is enrolled",
-      body: "You are auto-enrolled in an employment if you are a PAYE employee aged 23 to 60, earn at least €20,000 a year across jobs, and that employment is not already paying into a qualifying workplace pension or employer PRSA through payroll.\n\nIf you are 18 to 22, 60 to 66, or under the earnings threshold, you can opt in. Self-employed people cannot join. Use the pension tax relief tool for a PRSA or RAC instead.",
+      body: "You are auto-enrolled if you are a PAYE employee aged 23 to 60 and earn at least €20,000 a year across jobs. That employment must not already be paying into a qualifying workplace pension or employer PRSA through payroll.\n\nIf you are 18 to 22, 60 to 66, or under the earnings threshold, you can opt in. Self-employed people cannot join. Use the pension tax relief tool for a PRSA or RAC instead.",
       sourceIds: ["gov-ae", "ci-ae", "mff"],
     },
     {

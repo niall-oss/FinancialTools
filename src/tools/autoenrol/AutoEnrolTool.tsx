@@ -670,8 +670,11 @@ export function AutoEnrolTool() {
 
           <FieldNote>
             AE is accessed at State Pension age {IE_STATE_PENSION_AGE}. Occupational schemes can often pay
-            from 50, PRSAs from 60. You cannot pay extra into My Future Fund. Both pots count toward the
-            €2.2m Standard Fund Threshold. 25% tax-free lump sum on drawdown, rest taxed as income.
+            from 50, PRSAs from 60. You cannot pay extra into My Future Fund.
+          </FieldNote>
+          <FieldNote>
+            Both pots count toward the €2.2m Standard Fund Threshold. 25% tax-free lump sum on drawdown, rest
+            taxed as income.
           </FieldNote>
           <FieldNote>{DISCLAIMER}</FieldNote>
         </ResultsPanel>

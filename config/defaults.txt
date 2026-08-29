@@ -1,4 +1,4 @@
-# Irish Financial Tools — config
+# Irish Financial Tools config
 # Lines starting with # are comments. Blank lines ignored.
 
 [profile]

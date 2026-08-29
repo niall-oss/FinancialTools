@@ -340,7 +340,7 @@ export function MortgageTool() {
                 <FieldNote className="mt-2">
                   {result.green.greenEligible
                     ? `Effective rate: ${formatPct(result.effectiveInterestRatePct, 2)} (−${formatPct(result.green.greenDiscountPct, 2)} green discount, ${result.green.greenTier} tier)`
-                    : "Green discount not applied — see warnings below."}
+                    : "Green discount not applied. See warnings below."}
                 </FieldNote>
               ) : null}
             </AccordionContent>

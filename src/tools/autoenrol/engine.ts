@@ -429,7 +429,7 @@ export function runAutoEnrolPlan(input: AutoEnrolInput): AutoEnrolResult {
   if (eligibility === "opt_in") {
     if (input.age < 23 || input.age > 60) {
       warnings.push(
-        `Age ${Math.floor(input.age)} is outside 23–60, so you would not be auto-enrolled. You can still opt in as an employee under ${IE_STATE_PENSION_AGE}.`,
+        `Age ${Math.floor(input.age)} is outside 23 to 60, so you would not be auto-enrolled. You can still opt in as an employee under ${IE_STATE_PENSION_AGE}.`,
       );
     } else if (salary < IE_AE_MIN_ANNUAL_EARNINGS) {
       warnings.push(

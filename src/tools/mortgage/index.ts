@@ -7,7 +7,7 @@ import { mortgageLearn } from "./learn";
 export const mortgageTool: ToolDefinition = {
   id: "mortgage",
   title: "Irish mortgage calculator",
-  description: "Borrowing limits, amortization, stamp duty, schemes, and overpayments.",
+  description: "Central Bank limits, stamp duty, HTB, FHS, and what the monthly payment actually costs.",
   icon: House,
   configKeys: [...MORTGAGE_KEYS],
   component: MortgageTool,

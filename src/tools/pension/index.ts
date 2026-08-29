@@ -7,7 +7,7 @@ import { pensionLearn } from "./learn";
 export const pensionTool: ToolDefinition = {
   id: "pension",
   title: "Pension tax relief",
-  description: "Irish age-band allowances, income-tax saved, and what-if contribution charts.",
+  description: "Age-band relief, tax saved this year, and what happens if you pay more.",
   icon: Landmark,
   configKeys: [...PENSION_KEYS],
   component: PensionTool,

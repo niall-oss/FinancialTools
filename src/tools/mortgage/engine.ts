@@ -173,7 +173,7 @@ export function runMortgagePlan(input: MortgageInput): MortgagePlanResult {
     stressedMonthlyPayment + input.monthlyCommitments > (input.grossIncome / 12) * 0.5
   ) {
     warnings.push(
-      "Stressed repayment plus commitments exceeds ~50% of gross monthly income — lenders may decline.",
+      "Stressed repayment plus commitments exceeds ~50% of gross monthly income, so lenders may decline.",
     );
   }
 

@@ -1,89 +1,89 @@
 export const BUYER_TYPE_HINT =
-  "First-time buyer (FTB): never held a residential mortgage. Second/subsequent (SSB): owned before. Buy-to-let (BTL): investment property with stricter LTV.";
+  "First-time buyer means you have never held a residential mortgage. Second or subsequent means you have. Buy-to-let is an investment property and the LTV is tighter.";
 
 export const PROPERTY_TYPE_HINT =
-  "New builds qualify for Help to Buy and First Home Scheme. Stamp duty on new builds is calculated on the price excluding 13.5% VAT.";
+  "New builds qualify for Help to Buy and First Home Scheme. Stamp duty on a new build is on the price excluding 13.5% VAT.";
 
 export const DEPOSIT_PCT_HINT =
-  "Enter as a percentage or euro amount. Central Bank rules require at least 10% for FTB/SSB or 30% for buy-to-let. Invalid values are highlighted in red.";
+  "Percentage or euro amount. Central Bank rules want at least 10% for an owner-occupier, 30% for buy-to-let.";
 
 export const INTEREST_RATE_HINT =
-  "Standard mortgage interest rate before any green discount. Compare fixed vs variable offers from lenders.";
+  "Rate before any green discount.";
 
 export const GREEN_MORTGAGE_HINT =
-  "Green mortgages offer lower fixed rates for energy-efficient homes (typically BER A0, A, or B). Products are fixed-rate; early switching may incur breakage fees.";
+  "Some lenders cut the fixed rate if the BER is A0, A, or B. Products are usually fixed. Switching early can mean breakage fees.";
 
 export const BER_RATING_HINT =
-  "Building Energy Rating from SEAI. Since May 2026 the simplified scale is A0–G; older A1–B3 certs remain valid. Most lenders require B3 equivalent or better.";
+  "Building Energy Rating from SEAI. From May 2026 the scale is A0 to G. Older A1 to B3 certificates stay valid until they expire. Most lenders want B3 equivalent or better.";
 
 export const GREEN_DISCOUNT_OVERRIDE_HINT =
-  "Leave at −1 to use automatic BER-based discount. Enter a value if you know your lender's exact green rate reduction.";
+  "Leave at −1 to use the BER-based discount. Type a value if you know your lender's exact cut.";
 
 export const TERM_YEARS_HINT =
-  "Typical Irish mortgage terms are 25–35 years. A longer term lowers monthly payments but increases total interest.";
+  "Irish mortgages often run 25 to 35 years. A longer term lowers the monthly payment and raises the interest you pay.";
 
 export const USE_PROFILE_SALARY_HINT =
-  "Uses your profile salary for borrowing capacity. Add a second applicant salary for joint applications.";
+  "Uses your profile salary for borrowing capacity. Add a second applicant salary for a joint application.";
 
 export const SECOND_SALARY_HINT =
-  "Combined gross income is used for the loan-to-income (LTI) limit on joint applications.";
+  "Joint applications use combined gross income for the loan-to-income limit.";
 
 export const MONTHLY_COMMITMENTS_HINT =
-  "Existing loans, childcare, and other regular costs. Lenders deduct these from disposable income during affordability checks.";
+  "Existing loans, childcare, and other regular costs. Lenders take these off disposable income when they test affordability.";
 
 export const STRESS_TEST_HINT =
-  "Central Bank requires lenders to test affordability at your offer rate plus 2%, with a typical floor of 5%.";
+  "Lenders have to test the repayment at your offer rate plus 2%, with a floor around 5%.";
 
 export const MPE_HINT =
-  "Macro-prudential exception: lenders may exceed LTI/LTV limits for up to 15% of new lending. Discretionary and competitive.";
+  "Lenders may exceed LTI and LTV limits for up to 15% of new lending. That exception is discretionary. Do not budget as if you will get it.";
 
 export const BRIDGING_LOAN_HINT =
-  "Principal home bridging loans (≤18 months) are exempt from LTI limits from April 2026. LTV limits still apply.";
+  "Bridging loans on a principal home of 18 months or less are exempt from LTI limits from April 2026. LTV limits still apply.";
 
 export const HTB_HINT =
-  "Help to Buy refunds income tax and DIRT paid (max €30,000 or 10% of price) for new builds up to €500,000. Mortgage must be at least 70% LTV.";
+  "Help to Buy refunds income tax and DIRT you paid, up to €30,000 or 10% of the price, on a new build at or under €500,000. The mortgage must be at least 70% of the price.";
 
 export const HTB_REFUND_HINT =
-  "Your estimated refund based on tax paid in the prior 4 years. Revenue caps at €30,000, 10% of price, or tax actually paid.";
+  "Your estimate based on tax paid in the prior 4 years. Revenue caps at €30,000, 10% of the price, or tax actually paid.";
 
 export const FHS_HINT =
-  "First Home Scheme provides shared equity (up to 30%, or 20% with HTB) on new builds. Requires maximum mortgage from a participating lender.";
+  "Shared equity on a new build, up to 30% of the price, or 20% if you also use Help to Buy. You have to take the maximum mortgage a participating lender will give you.";
 
 export const FHS_EQUITY_HINT =
-  "Government equity stake in your home (min €10,000 or 2.5% of price). Reduces your mortgage, not stamp duty.";
+  "State and lender stake in the home. Minimum is €10,000 or 2.5% of the price. It cuts the mortgage, not stamp duty.";
 
 export const SOLICITOR_FEE_HINT =
-  "Conveyancing fees typically €1,500–€3,000 plus 23% VAT. Get a fixed-price quote.";
+  "Conveyancing is often €1,500 to €3,000 plus 23% VAT. Ask for a fixed-price quote.";
 
 export const VALUATION_FEE_HINT =
-  "Lender-required valuation report, usually €150–€250.";
+  "The lender's valuation report. Often €150 to €250.";
 
 export const SURVEY_FEE_HINT =
-  "Optional structural survey or new-build snag list. Recommended before purchase.";
+  "Structural survey or new-build snag list. Not required by the Central Bank rules.";
 
 export const MORTGAGE_PROTECTION_HINT =
-  "Legally required life insurance that clears the mortgage if you die. Shop around — you need not buy from your lender.";
+  "Life cover that clears the mortgage if you die. The lender can require it. They cannot force you to buy theirs.";
 
 export const HOME_INSURANCE_HINT =
-  "Buildings insurance required by your lender. Budget €300–€800 per year depending on cover.";
+  "Buildings insurance, required by the lender. Often €300 to €800 a year, depending on cover.";
 
 export const LPT_ADJUSTMENT_HINT =
-  "Local authorities may adjust LPT by up to ±15% from the national basic rate. Dublin councils often add 15%.";
+  "Local authorities can vary LPT by up to 15% either way from the national basic rate. Several Dublin councils add the full 15%.";
 
 export const OVERPAYMENT_HINT =
-  "Extra payments reduce total interest and can shorten your term. Check fixed-rate breakage fees before overpaying.";
+  "Extra payments cut the interest you pay and can shorten the term. On a fixed rate, check breakage fees first.";
 
 export const OVERPAYMENT_MONTHLY_START_HINT =
-  "Year the extra monthly payment begins (1 = from the start). e.g. enter 4 to overpay only from year 4 onwards.";
+  "Year the extra monthly payment starts. 1 means from the start. Type 4 to begin in year 4.";
 
 export const OVERPAYMENT_LUMP_SUM_START_HINT =
-  "Year the lump sum is applied (1 = at the start of the mortgage). e.g. enter 4 to pay a lump sum at the beginning of year 4.";
+  "Year the lump sum is applied. 1 means at the start. Type 4 to pay it at the beginning of year 4.";
 
 export const LTI_HINT =
-  "Loan-to-income: max borrowing as a multiple of gross annual income (4× FTB, 3.5× SSB).";
+  "Maximum loan as a multiple of gross annual income. 4 times for a first-time buyer, 3.5 times for a second or subsequent buyer.";
 
 export const LTV_HINT =
-  "Loan-to-value: max mortgage as % of property price (90% FTB/SSB, 70% BTL). Determines minimum deposit.";
+  "Maximum mortgage as a share of the property price. 90% for an owner-occupier, 70% for buy-to-let. That sets the minimum deposit.";
 
 export const DISCLAIMER =
   "Illustrative only; not mortgage advice. Lenders apply individual credit policies and net disposable income tests.";
