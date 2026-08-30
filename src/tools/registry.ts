@@ -4,6 +4,7 @@ import { compoundTool } from "./compound";
 import { mortgageTool } from "./mortgage";
 import { networthTool } from "./networth";
 import { pensionTool } from "./pension";
+import { runwayTool } from "./runway";
 
 export const tools: ToolDefinition[] = [
   compoundTool,
@@ -11,6 +12,7 @@ export const tools: ToolDefinition[] = [
   pensionTool,
   autoenrolTool,
   networthTool,
+  runwayTool,
 ];
 
 export function getTools(): ToolDefinition[] {

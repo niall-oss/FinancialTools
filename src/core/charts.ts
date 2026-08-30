@@ -3,6 +3,7 @@ import { BarChart, LineChart, PieChart, ScatterChart } from "echarts/charts";
 import {
   GridComponent,
   LegendComponent,
+  MarkLineComponent,
   TooltipComponent,
 } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
@@ -14,6 +15,7 @@ echarts.use([
   ScatterChart,
   GridComponent,
   LegendComponent,
+  MarkLineComponent,
   TooltipComponent,
   CanvasRenderer,
 ]);
@@ -108,6 +110,7 @@ export interface LineSeries {
   data: number[];
   area?: boolean;
   stack?: string;
+  dashed?: boolean;
 }
 
 const CHART_GRID = {
@@ -123,6 +126,7 @@ export function renderLineChart(
   labels: string[],
   series: LineSeries[],
   colors: ChartColors = getChartColors(),
+  markCategory?: string,
 ): void {
   chart.setOption(
     {
@@ -144,6 +148,7 @@ export function renderLineChart(
       color: colors.series,
       series: series.map((s, index) => {
         const color = colors.series[index % colors.series.length];
+        const dashType = s.dashed ? "dashed" : "solid";
         return {
           name: s.name,
           type: "line",
@@ -152,10 +157,21 @@ export function renderLineChart(
           areaStyle: s.area ? { opacity: 0.15, color } : undefined,
           stack: s.stack,
           itemStyle: { color },
-          lineStyle: { width: 2, color },
+          lineStyle: { width: 2, color, type: dashType },
+          markLine:
+            index === 0 && markCategory
+              ? {
+                  silent: true,
+                  symbol: "none",
+                  animation: false,
+                  label: { color: colors.muted, formatter: "Target" },
+                  lineStyle: { color: colors.muted, type: "dashed", width: 1 },
+                  data: [{ xAxis: markCategory }],
+                }
+              : undefined,
           emphasis: {
             itemStyle: { color },
-            lineStyle: { width: 2, color },
+            lineStyle: { width: 2, color, type: dashType },
             areaStyle: s.area ? { opacity: 0.15, color } : undefined,
           },
         };
