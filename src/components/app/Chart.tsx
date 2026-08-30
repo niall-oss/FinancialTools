@@ -21,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 
 type ChartProps =
-  | { type: "line"; labels: string[]; series: LineSeries[]; className?: string }
+  | { type: "line"; labels: string[]; series: LineSeries[]; markCategory?: string; className?: string }
   | {
       type: "bar";
       labels: string[];
@@ -43,8 +43,9 @@ function ChartCanvas(props: ChartProps) {
     const el = ref.current;
     if (!el) return;
     const chart = createChart(el);
-    if (props.type === "line") renderLineChart(chart, props.labels, props.series);
-    else if (props.type === "bar") renderBarChart(chart, props.labels, props.series);
+    if (props.type === "line") {
+      renderLineChart(chart, props.labels, props.series, undefined, props.markCategory);
+    } else if (props.type === "bar") renderBarChart(chart, props.labels, props.series);
     else if (props.type === "pie") renderPieChart(chart, props.slices);
     else renderScatterChart(chart, props.points);
 

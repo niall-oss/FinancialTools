@@ -126,6 +126,18 @@ export const DEFAULTS: ConfigData = {
       "Cash|Current account|5000;Cash|Credit union|10000;Property|Home|400000;Pensions|Occupational pension|40000;Pensions|PRSA|0;Investments|ETFs|10000;Vehicles|Car|10000",
     liabilities: "Mortgage|Home loan|280000;Loans|Car loan|5000;Credit cards|Credit card|0",
   },
+  runway: {
+    cash: 15000,
+    use_networth_cash: false,
+    prsi_band: "5plus",
+    after_jprb_ja: false,
+    target_months: 6,
+    horizon_months: 36,
+    expense_groups: "Housing,Food,Transport,Utilities,Insurance,Debt,Childcare,Other",
+    expenses:
+      "Housing|Rent|1400|monthly|1;Food|Groceries|400|monthly|1;Food|Eating out|80|monthly|0;Transport|Leap / fuel|120|monthly|1;Utilities|Energy|140|monthly|1;Utilities|Broadband|50|monthly|1;Insurance|Car insurance|70|monthly|1;Debt|Car loan|180|monthly|1;Other|Phone|30|monthly|0",
+    incomes: "",
+  },
 };
 
 export const PROFILE_KEYS = ["annual_salary", "age"] as const;
@@ -224,6 +236,18 @@ export const PENSION_KEYS = [
 ] as const;
 
 export const NETWORTH_KEYS = ["asset_groups", "liability_groups", "assets", "liabilities"] as const;
+
+export const RUNWAY_KEYS = [
+  "cash",
+  "use_networth_cash",
+  "prsi_band",
+  "after_jprb_ja",
+  "target_months",
+  "horizon_months",
+  "expense_groups",
+  "expenses",
+  "incomes",
+] as const;
 
 export const AUTOENROL_KEYS = [
   "use_profile",
