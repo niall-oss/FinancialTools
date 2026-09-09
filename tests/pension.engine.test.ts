@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { calculateIrishIncomeTax, TAX_IE_2026, type TaxIeParams } from "../src/core/irish-income-tax";
 import { calculateUsc } from "../src/core/irish-payroll-tax";
 import { maxRelievableContribution } from "../src/core/irish-pension-rules";
@@ -40,6 +39,15 @@ describe("pension allowance", () => {
     expect(maxRelievableContribution(200_000, 60)).toBe(46_000);
     const result = runPensionPlan(input({ age: 60, relevantEarnings: 200_000, employeeAnnual: 0 }));
     expect(result.maxRelievable).toBe(46_000);
+  });
+
+  it("warns when earnings exceed €115,000 and the employee is contributing", () => {
+    const contributing = runPensionPlan(
+      input({ age: 60, relevantEarnings: 200_000, employeeAnnual: 10_000 }),
+    );
+    expect(contributing.warnings.some((warning) => warning.includes("115,000"))).toBe(true);
+    const none = runPensionPlan(input({ age: 60, relevantEarnings: 200_000, employeeAnnual: 0, avcAnnual: 0 }));
+    expect(none.warnings.some((warning) => warning.includes("earnings cap"))).toBe(false);
   });
 
   it("uses 20% at age 34 on €85,000", () => {

@@ -3,10 +3,12 @@ import { autoenrolTool } from "./autoenrol";
 import { compoundTool } from "./compound";
 import { mortgageTool } from "./mortgage";
 import { networthTool } from "./networth";
+import { payeTool } from "./paye";
 import { pensionTool } from "./pension";
 import { runwayTool } from "./runway";
 
 export const tools: ToolDefinition[] = [
+  payeTool,
   compoundTool,
   mortgageTool,
   pensionTool,

@@ -16,6 +16,7 @@ import {
   nextPensionAgeBand,
   PENSION_AGE_BANDS,
   pensionAgeBandForAge,
+  pensionEarningsCapWarning,
   pensionReliefPct,
   type PensionAgeBand,
 } from "../../core/irish-pension-rules";
@@ -307,6 +308,13 @@ export function runPensionPlan(input: PensionInput): PensionResult {
     : Infinity;
 
   const warnings: string[] = [];
+  const earningsCap = pensionEarningsCapWarning(
+    earnings,
+    employeeCash,
+    input.age,
+    input.sportsperson,
+  );
+  if (earningsCap) warnings.push(earningsCap);
   if (excess > 0) {
     warnings.push(
       `€${Math.round(excess).toLocaleString("en-IE")} of employee contributions is over this year's relief cap and gets no income-tax relief now. Unused capacity does not carry forward; only paid-but-unrelieved amounts do.`,

@@ -6,6 +6,10 @@ This is for working through a decision, not for filing anything. Illustrative on
 
 ## What can it do?
 
+### PAYE take-home
+
+A Class A payslip in pieces. Situation checkboxes, or the total from a tax-credit cert, then income tax, USC, and PRSI at each rate. A raise, a new age, or employer-paid health insurance is a second column. Employee pension only gets income-tax relief inside the age-band cap.
+
 ### Irish mortgage calculator
 
 A mortgage offer that clears the Central Bank loan-to-income cap can still fail a stress test once childcare is in. Help to Buy is tax you already paid, coming back, and it does not apply to a second-hand house. Stamp duty, LPT, and the cash you need at completion sit next to the monthly payment.
@@ -25,6 +29,10 @@ A lump sum plus monthly contributions under Irish tax. Deemed disposal on funds 
 ### Net worth snapshot
 
 A list of what you own and owe today. A house and a pension can make the headline look large while the current account is thin. Charts split the list by group and by how easy the money is to reach.
+
+### Emergency fund runway
+
+How many months the cash in the current account lasts once income you still get is counted, including Jobseeker's Pay-Related Benefit. It also sizes the pot for a target you pick, 6 months by default.
 
 Your numbers stay in the browser. Export and import a text config from the Config menu if you want a copy, or to try someone else's inputs.
 
