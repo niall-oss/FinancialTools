@@ -54,3 +54,21 @@ export function maxRelievableContribution(
 ): number {
   return cappedPensionEarnings(relevantEarnings) * (pensionReliefPct(age, sportsperson) / 100);
 }
+
+export function pensionEarningsCapWarning(
+  earnings: number,
+  contribution: number,
+  age: number,
+  sportsperson = false,
+  prefix = "",
+): string | null {
+  if (earnings <= IE_PENSION_EARNINGS_CAP || contribution <= 0.5) return null;
+  const cap = Math.round(maxRelievableContribution(earnings, age, sportsperson));
+  const pct = pensionReliefPct(age, sportsperson);
+  const capLabel = cap.toLocaleString("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  });
+  return `${prefix}Pay is above the €${IE_PENSION_EARNINGS_CAP.toLocaleString("en-IE")} earnings cap for pension tax relief. The ${pct}% age-band limit only applies to the first €${IE_PENSION_EARNINGS_CAP.toLocaleString("en-IE")} (${capLabel} this year). Extra salary does not increase that room.`;
+}

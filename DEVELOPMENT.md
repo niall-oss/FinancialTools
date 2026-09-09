@@ -34,7 +34,7 @@ uv sync
 npm run dev
 ```
 
-Open http://localhost:5173. Hot reload is on. Hash routes are `#/`, `#/compound`, `#/mortgage`, `#/pension`, `#/autoenrol`, and learn pages at `#/learn/<id>`.
+Open http://localhost:5173. Hot reload is on. Hash routes are `#/`, `#/paye`, `#/compound`, `#/mortgage`, `#/pension`, `#/autoenrol`, and learn pages at `#/learn/<id>`.
 
 To test `config.txt` loading via fetch, serve the repo root in a second terminal:
 
@@ -67,7 +67,6 @@ uv run pytest              # Python, config parser
 - `docs/DESIGN.md` is the UI design system for new tools
 - `build/` is Python build and validation scripts
 - `config/defaults.txt` is the default config
-- `docs/future-tools.md` is the backlog of planned tools
 - `dist/financials.html` is the built single-file output, after `npm run build`
 
 ## Building for distribution
@@ -125,7 +124,7 @@ employment_type=paye
 
 ## Adding a new tool
 
-See [docs/future-tools.md](docs/future-tools.md) for the backlog and checklist, and [docs/DESIGN.md](docs/DESIGN.md) for UI rules.
+See [docs/DESIGN.md](docs/DESIGN.md) for the checklist and UI rules.
 
 1. Create `src/tools/<id>/` with `index.ts`, `engine.ts`, `learn.ts`, `<Name>Tool.tsx`
 2. Register in `src/tools/registry.ts` (include `learn` on the definition)

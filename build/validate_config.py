@@ -15,6 +15,7 @@ REQUIRED_SECTIONS = {
     "pension",
     "autoenrol",
     "networth",
+    "paye",
 }
 REQUIRED_KEYS: dict[str, set[str]] = {
     "profile": {"annual_salary", "age"},
@@ -61,6 +62,12 @@ REQUIRED_KEYS: dict[str, set[str]] = {
         "liability_groups",
         "assets",
         "liabilities",
+    },
+    "paye": {
+        "use_profile",
+        "tax_status",
+        "claim_rent",
+        "employee_contrib_pct",
     },
 }
 
