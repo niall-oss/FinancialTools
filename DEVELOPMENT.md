@@ -87,7 +87,7 @@ The check job runs `npm run typecheck`, `npm test`, `uv run ruff check`, `uv run
 
 Merging to `main` publishes the next integer GitHub Release. Tags are the source of truth (`v1`, `v2`, and so on). There is no version bump commit. The first successful run on `main` is v1. Each later merge increments by one.
 
-Users download `financials.html` from the Releases page. See [README.md](README.md).
+A separate Pages workflow builds the same `dist/financials.html` and publishes it to GitHub Pages as `index.html`. Users can open the live site or download the file from Releases. See [README.md](README.md).
 
 After the first CI run appears, require the `check` and `build` status checks on `main` in the GitHub branch protection settings.
 
