@@ -1,6 +1,6 @@
 # Irish Financial Tools
 
-Irish personal finance calculators as one HTML file you open locally. 2026 rates and rules are the defaults.
+Irish personal finance calculators. 2026 rates and rules are the defaults.
 
 This is for working through a decision, not for filing anything. Illustrative only, not advice. Rules and rates change. Each tool has a learn page with links to Revenue, the Central Bank, and Citizens Information. Read those before you act.
 
@@ -38,7 +38,9 @@ Your numbers stay in the browser. Export and import a text config from the Confi
 
 ## How to use it
 
-Download `financials.html` or `financials-vN.html` from [Releases](../../releases). Open the file in a browser. Nothing is uploaded.
+Open [Irish Financial Tools](https://niall-oss.github.io/FinancialTools/).
+
+To use it offline, download `financials.html` or `financials-vN.html` from [Releases](../../releases) and open the file locally.
 
 ## License
 
